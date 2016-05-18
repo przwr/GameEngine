@@ -22,6 +22,7 @@ import game.logic.betweenareapathfinding.AreaConnectorsGenerator;
 import game.logic.betweenareapathfinding.BetweenAreaPathFinder;
 import game.place.Place;
 import game.place.cameras.Camera;
+import gamecontent.environment.Corpse;
 import org.newdawn.slick.Color;
 import sprites.ClothedAppearance;
 
@@ -31,7 +32,6 @@ import static game.place.Place.xAreaInPixels;
 import static game.place.Place.yAreaInPixels;
 import static game.place.map.Area.X_IN_TILES;
 import static game.place.map.Area.Y_IN_TILES;
-import gamecontent.environment.Corpse;
 
 /**
  * @author Wojtek
@@ -176,7 +176,7 @@ public abstract class Map {
         Figure collision = block.getCollision();
         return getAreaIndex(collision.getX(), collision.getY()) == area || getAreaIndex(collision.getX(), collision.getYEnd() - Place.tileSize) == area
                 || getAreaIndex(collision.getXEnd() - Place.tileSize, collision.getYEnd() - Place.tileSize) == area || getAreaIndex(collision.getXEnd()
-                        - Place.tileSize, collision.getY()) == area;
+                - Place.tileSize, collision.getY()) == area;
     }
 
     public PointContainer findPath(int xStart, int yStart, int xDestination, int yDestination, Figure collision) {
@@ -342,6 +342,7 @@ public abstract class Map {
         tempDepthPbjectsAndForegroundTiles.clear();
         getAreasToUpdate().stream().filter((area) -> (area >= 0 && area < areas.length && areas[area] != null)).forEach((area) -> {
             tempDepthObjects.addAll(areas[area].getDepthObjects());
+            tempDepthObjects.addAll(areas[area].getCorpses());
             tempDepthPbjectsAndForegroundTiles.addAll(areas[area].getDepthObjects());
             tempDepthPbjectsAndForegroundTiles.addAll(areas[area].getForegroundTiles());
         });
@@ -350,10 +351,6 @@ public abstract class Map {
                 object.update();
             }
         }
-    }
-
-    public Set<GameObject> getDepthObjectsFromAreasToUpdate() {
-        return tempDepthObjects;
     }
 
     public Set<GameObject> getDepthObjectsAndForegroundTilesFromAreasToUpdate() {
@@ -461,7 +458,6 @@ public abstract class Map {
 
     public void addObject(GameObject object) {
         if (object.getX() >= 0 && object.getY() >= 0 && object.getX() < width && object.getY() < height) {
-            object.setMapNotChange(this);
             if (object instanceof WarpPoint) {
                 warps.add((WarpPoint) object);
             }
@@ -566,6 +562,18 @@ public abstract class Map {
             for (int i : placement.getNearAreas(camera.getArea())) {
                 if (i >= 0 && i < areas.length) {
                     renderAreaBounds(i);
+                }
+            }
+        }
+    }
+
+
+    public void renderCorpses(Camera camera) {
+        Drawer.refreshForRegularDrawing();
+        for (int i : placement.getNearAreas(camera.getArea())) {
+            if (i >= 0 && i < areas.length) {
+                for (Corpse corpse : areas[i].getCorpses()) {
+                    corpse.render();
                 }
             }
         }

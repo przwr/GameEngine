@@ -18,6 +18,7 @@ import game.logic.navmeshpathfinding.PathFinder;
 import game.logic.navmeshpathfinding.navigationmesh.NavigationMesh;
 import game.logic.navmeshpathfinding.navigationmesh.NavigationMeshGenerator;
 import game.place.Place;
+import gamecontent.environment.Corpse;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -48,6 +49,7 @@ public class Area {
     private final ArrayList<GameObject> foregroundTiles = new ArrayList<>();
     private final ArrayList<GameObject> topObjects = new ArrayList<>();
     private final ArrayList<GameObject> depthObjects = new ArrayList<>();
+    private final ArrayList<Corpse> corpses = new ArrayList<>();
     private final ArrayList<WarpPoint> warps = new ArrayList<>();
     private final ArrayList<GameObject> interactiveObjects = new ArrayList<>();
     private final ArrayList<Light> lights = new ArrayList<>();
@@ -115,7 +117,7 @@ public class Area {
          tiles[x / Place.tileSize + y / Place.tileSize * Y_IN_TILES] = null;
          }*/
         GameObject object;
-        for (Iterator<GameObject> iterator = foregroundTiles.iterator(); iterator.hasNext();) {
+        for (Iterator<GameObject> iterator = foregroundTiles.iterator(); iterator.hasNext(); ) {
             object = iterator.next();
             if (object.isVisible() && object.getX() == x && object.getY() == y) {
                 iterator.remove();
@@ -219,7 +221,9 @@ public class Area {
             if (object instanceof Entity) {
                 entities.add((Entity) object);
             }
-            if (object.isSolid()) {
+            if (object instanceof Corpse) {
+                corpses.add((Corpse) object);
+            } else if (object.isSolid()) {
                 solidObjects.add(object);
             } else {
                 flatObjects.add(object);
@@ -242,7 +246,9 @@ public class Area {
 
     public boolean deleteObject(GameObject object) {
         boolean removed;
-        if (object.isOnTop()) {
+        if (object instanceof Corpse) {
+            removed = corpses.remove(object);
+        } else if (object.isOnTop()) {
             removed = topObjects.remove(object);
         } else {
             removed = depthObjects.remove(object);
@@ -310,6 +316,7 @@ public class Area {
         lights.clear();
         blocks.clear();
         depthObjects.clear();
+        corpses.clear();
         foregroundTiles.clear();
         topObjects.clear();
         nearBlocks.clear();
@@ -444,5 +451,9 @@ public class Area {
 
     public ArrayList<GameObject> getInteractiveObjects() {
         return interactiveObjects;
+    }
+
+    public ArrayList<Corpse> getCorpses() {
+        return corpses;
     }
 }

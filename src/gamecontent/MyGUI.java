@@ -16,6 +16,7 @@ import game.gameobject.stats.PlayerStats;
 import game.place.Place;
 import game.place.cameras.Camera;
 import net.jodk.lang.FastMath;
+import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sounds.Sound;
 import sprites.SpriteSheet;
@@ -43,12 +44,6 @@ public class MyGUI extends GUIObject {
     private float scale;
     private Sound error;
 
-    public final void initializeSounds() {
-        if (error == null) {
-            error = Settings.sounds.getSoundEffect("error.ogg");
-        }
-    }
-
     public MyGUI(String name, Place place) {
         super(name, place);
         initializeSounds();
@@ -65,6 +60,12 @@ public class MyGUI extends GUIObject {
 //            change = 0.75f;
 //        }
         initializeBuffers();
+    }
+
+    public final void initializeSounds() {
+        if (error == null) {
+            error = Settings.sounds.getSoundEffect("error.ogg");
+        }
     }
 
     private void initializeBuffers() {
@@ -167,6 +168,46 @@ public class MyGUI extends GUIObject {
         renderEnergy();
         renderPairArrow();
         renderIcons();
+        renderHandyMenu();
+    }
+
+    private void renderHandyMenu() {
+        if (player.usesHandyMenu()) {
+            int menuHeight = Display.getHeight() / 2 - (2 * size + 4 * border) - 4;
+            int menuWidth = Display.getWidth() / 2 - border - 4;
+            int secondPartHeight = size + 3 * border;
+            int secondPartWidth = 2 * size + 3 * border;
+            switch (corner) {
+                case LEFT_TOP:
+                    Drawer.regularShader.translate(0, secondPartWidth);
+                    break;
+                case RIGHT_TOP:
+                    Drawer.regularShader.translate(-menuWidth + secondPartWidth - border, secondPartWidth);
+                    break;
+                case LEFT_BOTTOM:
+                    Drawer.regularShader.translate(0, -menuHeight - border);
+                    break;
+                case RIGHT_BOTTOM:
+                    Drawer.regularShader.translate(-menuWidth + secondPartWidth - border, -menuHeight - border);
+                    break;
+            }
+            Drawer.setColorStatic(0.5f, 0.4f, 0.3f, 0.8f);
+            Drawer.drawRectangle(0, 0, menuWidth, menuHeight);
+            switch (corner) {
+                case LEFT_TOP:
+                    Drawer.drawRectangle(secondPartWidth, -secondPartHeight, menuWidth - secondPartWidth, secondPartHeight);
+                    break;
+                case RIGHT_TOP:
+                    Drawer.drawRectangle(0, -secondPartHeight, menuWidth - secondPartWidth, secondPartHeight);
+                    break;
+                case LEFT_BOTTOM:
+                    Drawer.drawRectangle(secondPartWidth, menuHeight, menuWidth - secondPartWidth, secondPartHeight);
+                    break;
+                case RIGHT_BOTTOM:
+                    Drawer.drawRectangle(0, menuHeight, menuWidth - secondPartWidth, secondPartHeight);
+                    break;
+            }
+        }
     }
 
     private void renderIcons() {

@@ -56,6 +56,7 @@ public abstract class Place extends ScreenPlace {
     public int splitScreenMode, playersCount;
     protected SpriteBase sprites;
     protected short mapIDCounter = 0;
+    boolean g = true;
     private Console console;
 
     {
@@ -78,10 +79,10 @@ public abstract class Place extends ScreenPlace {
                 }
             }
             for (int player = 0; player < playersCount; player++) {
-                currentCamera = (((Player) players[player]).getCamera());
+                currentCamera = (players[player].getCamera());
                 Map map = players[player].getMap();
                 if (map != null) {
-                    Drawer.setCurrentColor(map.getLightColor());
+//                    Drawer.setCurrentColor(map.getLightColor());
                     SplitScreen.setSplitScreen(this, playersCount, player);
                     if (player == 0 || !singleCamera) {
                         if (Main.backgroundLoader.isFirstLoaded() || Main.backgroundLoader.allLoaded()) {
@@ -123,7 +124,7 @@ public abstract class Place extends ScreenPlace {
                 if (!Settings.shadowOff) {
                     Renderer.preRenderLights(map);
                 }
-                currentCamera = (((Player) players[0]).getCamera());
+                currentCamera = (players[0].getCamera());
                 SplitScreen.setSplitScreen(this, 1, 0);
                 if (Main.backgroundLoader.isFirstLoaded() || Main.backgroundLoader.allLoaded()) {
                     glEnable(GL_SCISSOR_TEST);
@@ -151,7 +152,6 @@ public abstract class Place extends ScreenPlace {
             }
         };
     }
-
 
     protected Place(Game game, int tileSize) {
         super(game);
@@ -189,14 +189,20 @@ public abstract class Place extends ScreenPlace {
             Drawer.regularShader.scaleTranslateDefault(currentCamera.getXOffsetEffect(), currentCamera.getYOffsetEffect(), (float) Place
                     .getCurrentScale());
         }
+        map.renderCorpses(currentCamera);
         map.renderObjects(currentCamera);
         Drawer.regularShader.resetDefaultMatrix();
         if (map.getVisibleLights().size() > 0) {
             Renderer.renderLights(map.getLightColor(), camXStart, camYStart, camXEnd, camYEnd, camXTStart, camYTStart, camXTEnd, camYTEnd);
         }
         Drawer.setCurrentColor(Color.white);
-        currentCamera.renderGUI();
         currentCamera.neutralizeEffect();
+//        if (g) {
+        currentCamera.renderGUI();
+//            g = false;
+//        } else {
+//            g = true;
+//        }
     }
 
     private void manageFading(Map map) {

@@ -20,8 +20,9 @@ import game.place.Place;
 import sounds.Sound;
 import sprites.ClothedAppearance;
 
-import static game.gameobject.entities.Entity.*;
 import java.util.ArrayList;
+
+import static game.gameobject.entities.Entity.*;
 
 /**
  * @author przemek
@@ -111,6 +112,7 @@ public class MyController extends PlayerController {
                 }
             }
             updateEnergy();
+            handyMenu();
             if (!inControl.isHurt() || stats.isProtectionState()) {
                 stats.setProtectionState(false);
                 if (inControl.isAbleToMove()) {
@@ -157,6 +159,7 @@ public class MyController extends PlayerController {
         }
     }
 
+
     private void updateEnergy() {
         float energyGain = 0.015f;
         if (lastEnergyUp > 0) {
@@ -174,6 +177,18 @@ public class MyController extends PlayerController {
             lastEnergyUp = current;
         } else {
             lastEnergyUp = Place.getDayCycle().getCurrentTimeInMiliSeconds();
+        }
+    }
+
+    private void handyMenu() {
+        if (actions[INPUT_HANDY_MENU].isKeyClicked()) {
+            if (inControl.usesHandyMenu()) {
+                inControl.setUsesHandyMenu(false);
+                inControl.setAbleToMove(true);
+            } else {
+                inControl.setUsesHandyMenu(true);
+                inControl.setAbleToMove(false);
+            }
         }
     }
 

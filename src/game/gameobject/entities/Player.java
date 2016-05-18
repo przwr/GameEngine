@@ -6,7 +6,6 @@
 package game.gameobject.entities;
 
 import engine.utilities.Drawer;
-import engine.utilities.Methods;
 import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
 import game.gameobject.inputs.PlayerController;
@@ -16,11 +15,9 @@ import game.place.Place;
 import game.place.cameras.Camera;
 import game.place.map.Map;
 import game.text.effects.TextController;
-import gamecontent.MyController;
 import net.GameOnline;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author przemek
@@ -38,6 +35,7 @@ public abstract class Player extends Entity {
     protected Map empty;
     protected GameOnline online;
     private Menu menu;
+    private boolean usesHandyMenu;
 
     protected Player(String name) {
         super();
@@ -55,6 +53,13 @@ public abstract class Player extends Entity {
     }
 
     public void addGui(GUIObject gui) {
+        if (!guiList.isEmpty()) {
+            for (GUIObject g : guiList) {
+                if (g.getClass() == gui.getClass()) {
+                    return;
+                }
+            }
+        }
         guiList.add(gui);
         sortGUI();
         gui.setPlayer(this);
@@ -206,5 +211,13 @@ public abstract class Player extends Entity {
 
     public TextController getTextController() {
         return textControl;
+    }
+
+    public void setUsesHandyMenu(boolean usesHandyMenu) {
+        this.usesHandyMenu = usesHandyMenu;
+    }
+
+    public boolean usesHandyMenu() {
+        return usesHandyMenu;
     }
 }
