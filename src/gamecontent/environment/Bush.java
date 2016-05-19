@@ -117,6 +117,7 @@ public class Bush extends GameObject {
         }
     }
 
+
     @Override
     public void render() {
         preRender();
@@ -139,62 +140,75 @@ public class Bush extends GameObject {
         }
     }
 
+    @Override
+    public void update() {
+        if (vbo != null) {
+            updateWithWind();
+        }
+    }
+
     private void updateWithWind() {
-        Drawer.streamVertexData.clear();
-        Drawer.streamColorData.clear();
-        Drawer.streamIndexData.clear();
-        int yStart, yShift, yEnd = 0, vc = 0;
-        int change = 34;
-        int yMax = fbo.getHeight();
-        float xMod = 1.1f;
-        float xDirection = (float) Methods.xRadius(map.getWindDirection() + windDirectionModifier, map.getWindStrength());
-        float yDirection = (float) Methods.yRadius(map.getWindDirection() + windDirectionModifier, map.getWindStrength());
-        yDirection = Math.round(yDirection * Methods.ONE_BY_SQRT_ROOT_OF_2);
-        if (windStage >= 31416) {
-            windChange = false;
-        } else if (windStage <= 0) {
-            windChange = true;
+        if (map.getWindStrength() > 2) {
+            Drawer.streamVertexData.clear();
+            Drawer.streamColorData.clear();
+            Drawer.streamIndexData.clear();
+            int yStart, yShift, yEnd = 0, vc = 0;
+            int change = 34;
+            int yMax = fbo.getHeight();
+            float xMod = 1.1f;
+            float xDirection = (float) Methods.xRadius(map.getWindDirection() + windDirectionModifier, map.getWindStrength());
+            float yDirection = (float) Methods.yRadius(map.getWindDirection() + windDirectionModifier, map.getWindStrength());
+            yDirection = Math.round(yDirection * Methods.ONE_BY_SQRT_ROOT_OF_2);
+            if (windStage >= 31416) {
+                windChange = false;
+            } else if (windStage <= 0) {
+                windChange = true;
+            }
+            windStage += (windChange ? 0.1 : -0.1) * (Time.getDelta() + (random.randomInRange(-5, 5) / 10f));
+            float stageValue = (float) FastMath.sin(windStage) * 0.5f;
+            xDirection += Methods.roundDouble(xDirection * stageValue);
+            yDirection += Methods.roundDouble(yDirection * stageValue);
+            int squeezShift = (int) yDirection + (yMax - Methods.roundDouble(FastMath.sqrt(yMax * yMax - xDirection * xDirection)));
+            float ySqueez = (yMax - squeezShift) / (float) yMax;
+            squeezShift = Math.round(squeezShift / (fbo.getWidth() / (float) yMax));
+            int slices = fbo.getHeight() / change + (fbo.getHeight() % change == 0 ? 0 : 1);
+            int trunkE = 1;
+            int trunkS = 1;
+            for (int i = 0; i < slices; i++) {
+                yStart = yEnd;
+                yEnd += change;
+                if (yEnd > yMax) {
+                    yEnd = yMax;
+                }
+                if (i == slices - 2) {
+                    trunkS = 0;
+                }
+                if (i == slices - 1) {
+                    trunkE = 0;
+                }
+                yShift = yMax - yEnd;
+                Drawer.streamVertexData.add(
+                        trunkE * xDirection * ((yShift + change) / (float) yMax), squeezShift + (yStart) * ySqueez,
+                        trunkS * xDirection / xMod * ((yShift) / (float) yMax), squeezShift + (fbo.getHeight() - yShift) * ySqueez,
+                        fbo.getWidth() + trunkS * xDirection / xMod * ((yShift) / (float) yMax), squeezShift + (fbo.getHeight() - yShift) * ySqueez,
+                        fbo.getWidth() + trunkE * xDirection * ((yShift + change) / (float) yMax), squeezShift + (yStart) * ySqueez
+                );
+                Drawer.streamColorData.add(
+                        0, (fbo.getHeight() - yStart) / (float) fbo.getHeight(),
+                        0, (yShift) / (float) fbo.getHeight(),
+                        1f, (yShift) / (float) fbo.getHeight(),
+                        1f, (fbo.getHeight() - yStart) / (float) fbo.getHeight()
+                );
+                Drawer.streamIndexData.add(vc, vc + 1, vc + 3, vc + 2, vc + 3, vc + 1);
+                vc += 4;
+                xDirection /= xMod;
+            }
+            vbo.updateAll(Drawer.streamVertexData.toArray(), Drawer.streamColorData.toArray(), Drawer.streamIndexData.toArray());
+        } else if (vbo.getVertexCount() > 1) {
+            float[] vertices = {0};
+            int[] indices = {0};
+            vbo.updateAll(vertices, vertices, indices);
         }
-        windStage += (windChange ? 0.1 : -0.1) * (Time.getDelta() + (random.randomInRange(-5, 5) / 10f));
-        float stageValue = (float) FastMath.sin(windStage) * 0.5f;
-        xDirection += Methods.roundDouble(xDirection * stageValue);
-        yDirection += Methods.roundDouble(yDirection * stageValue);
-        int squeezShift = (int) yDirection + (yMax - Methods.roundDouble(FastMath.sqrt(yMax * yMax - xDirection * xDirection)));
-        float ySqueez = (yMax - squeezShift) / (float) yMax;
-        squeezShift = Math.round(squeezShift / (fbo.getWidth() / (float) yMax));
-        int slices = fbo.getHeight() / change + (fbo.getHeight() % change == 0 ? 0 : 1);
-        int trunkE = 1;
-        int trunkS = 1;
-        for (int i = 0; i < slices; i++) {
-            yStart = yEnd;
-            yEnd += change;
-            if (yEnd > yMax) {
-                yEnd = yMax;
-            }
-            if (i == slices - 2) {
-                trunkS = 0;
-            }
-            if (i == slices - 1) {
-                trunkE = 0;
-            }
-            yShift = yMax - yEnd;
-            Drawer.streamVertexData.add(
-                    trunkE * xDirection * ((yShift + change) / (float) yMax), squeezShift + (yStart) * ySqueez,
-                    trunkS * xDirection / xMod * ((yShift) / (float) yMax), squeezShift + (fbo.getHeight() - yShift) * ySqueez,
-                    fbo.getWidth() + trunkS * xDirection / xMod * ((yShift) / (float) yMax), squeezShift + (fbo.getHeight() - yShift) * ySqueez,
-                    fbo.getWidth() + trunkE * xDirection * ((yShift + change) / (float) yMax), squeezShift + (yStart) * ySqueez
-            );
-            Drawer.streamColorData.add(
-                    0, (fbo.getHeight() - yStart) / (float) fbo.getHeight(),
-                    0, (yShift) / (float) fbo.getHeight(),
-                    1f, (yShift) / (float) fbo.getHeight(),
-                    1f, (fbo.getHeight() - yStart) / (float) fbo.getHeight()
-            );
-            Drawer.streamIndexData.add(vc, vc + 1, vc + 3, vc + 2, vc + 3, vc + 1);
-            vc += 4;
-            xDirection /= xMod;
-        }
-        vbo.updateAll(Drawer.streamVertexData.toArray(), Drawer.streamColorData.toArray(), Drawer.streamIndexData.toArray());
     }
 
     @Override

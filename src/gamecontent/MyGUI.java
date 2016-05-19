@@ -16,7 +16,6 @@ import game.gameobject.stats.PlayerStats;
 import game.place.Place;
 import game.place.cameras.Camera;
 import net.jodk.lang.FastMath;
-import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import sounds.Sound;
 import sprites.SpriteSheet;
@@ -82,7 +81,8 @@ public class MyGUI extends GUIObject {
         int r = size / 2 - border / 3 - border / 6;
         float[] ringVs1 = Drawer.getRingVertices(size / 2, size / 2, r, border / 3, size);
         float[] ringVs2 = Drawer.getRingVertices(size + border, size + border, size + border, border / 3, size);
-        float[] ringVs3 = Drawer.getRingVertices(size + border, size + border, size, border / 3, size);
+        float[] ringVs3 = Drawer.getRingVertices(size + border, size + border, size - border, border / 3, size);
+//        float[] ringVs3 = Drawer.getRingVertices(size + border, size + border, size, border / 3, size);
         addSize(0, ringVs1.length);
         addSize(1, ringVs2.length);
         addSize(2, ringVs3.length);
@@ -173,44 +173,71 @@ public class MyGUI extends GUIObject {
 
     private void renderHandyMenu() {
         if (player.usesHandyMenu()) {
-            int menuHeight = Display.getHeight() / 2 - (2 * size + 4 * border) - 4;
-            int menuWidth = Display.getWidth() / 2 - border - 4;
+            int menuHeight = 384 - (2 * size + 4 * border) - 4;
+            int menuWidth = 512 - 4 * border - 4;
             int secondPartHeight = size + 3 * border;
-            int secondPartWidth = 2 * size + 3 * border;
+            int secondPartWidth = 2 * size + 3 * border - 10;
             switch (corner) {
                 case LEFT_TOP:
-                    Drawer.regularShader.translate(0, secondPartWidth);
+                    Drawer.regularShader.translate(0, menuHeight - 3 * border - 5);
                     break;
                 case RIGHT_TOP:
-                    Drawer.regularShader.translate(-menuWidth + secondPartWidth - border, secondPartWidth);
+                    Drawer.regularShader.translate(-2, menuHeight - 3 * border - 5);
                     break;
                 case LEFT_BOTTOM:
-                    Drawer.regularShader.translate(0, -menuHeight - border);
+                    Drawer.regularShader.translate(0, -menuHeight - border + 1);
                     break;
                 case RIGHT_BOTTOM:
-                    Drawer.regularShader.translate(-menuWidth + secondPartWidth - border, -menuHeight - border);
+                    Drawer.regularShader.translate(-2, -menuHeight - border + 1);
                     break;
             }
+            Drawer.setColorStatic(0.4f, 0.4f, 0.4f, 0.8f);
+            Drawer.drawRectangle(0, 0, secondPartWidth, menuHeight);
+            drawEquipmentSlots(12, 3, 50);
+
+
             Drawer.setColorStatic(0.5f, 0.4f, 0.3f, 0.8f);
-            Drawer.drawRectangle(0, 0, menuWidth, menuHeight);
+
+            int space = 50;
+            int xSlots = 6;
+            int ySlots = 6;
+            int xBackpack = 6 + xSlots * 50;
+            int yBackpack = 4 + ySlots * 50;
             switch (corner) {
                 case LEFT_TOP:
-                    Drawer.drawRectangle(secondPartWidth, -secondPartHeight, menuWidth - secondPartWidth, secondPartHeight);
+                    Drawer.regularShader.translateNoReset(secondPartWidth + 6, -secondPartHeight);
                     break;
                 case RIGHT_TOP:
-                    Drawer.drawRectangle(0, -secondPartHeight, menuWidth - secondPartWidth, secondPartHeight);
+                    Drawer.regularShader.translateNoReset(-xBackpack - 10, -secondPartHeight);
                     break;
                 case LEFT_BOTTOM:
-                    Drawer.drawRectangle(secondPartWidth, menuHeight, menuWidth - secondPartWidth, secondPartHeight);
+                    Drawer.regularShader.translateNoReset(secondPartWidth + 6, menuHeight + secondPartHeight - yBackpack);
                     break;
                 case RIGHT_BOTTOM:
-                    Drawer.drawRectangle(0, menuHeight, menuWidth - secondPartWidth, secondPartHeight);
+                    Drawer.regularShader.translateNoReset(-xBackpack - 10, menuHeight + secondPartHeight - yBackpack);
                     break;
             }
+            Drawer.drawRectangle(0, 0, xBackpack, yBackpack);
+            drawEquipmentSlots(xSlots * ySlots, xSlots, space);
         }
     }
 
+    private void drawEquipmentSlots(int all, int cols, int space) {
+        Drawer.regularShader.translateNoReset(-4, -5);
+        for (int i = 0; i < all; i++) {
+            renderItemIcon(i % 2);
+            renderIconRing();
+            Drawer.regularShader.translateNoReset(space, 0);
+            if ((i + 1) % cols == 0) {
+                Drawer.regularShader.translateNoReset(-space * cols, space);
+            }
+        }
+        Drawer.regularShader.translateNoReset(6, -195);
+    }
+
     private void renderIcons() {
+        renderLifeEnergyRings();
+
         Drawer.regularShader.translate(size / 2 + border, 2 * border / 3);
         renderItemIcon(0);
         renderIconRing();
@@ -227,7 +254,6 @@ public class MyGUI extends GUIObject {
         renderItemIcon(0);
         renderIconRing();
 
-        renderLifeEnergyRings();
 
         switch (corner) {
             case LEFT_TOP:
@@ -304,16 +330,18 @@ public class MyGUI extends GUIObject {
         c.a = 1f;
         float blink = (float) FastMath.sqrt(lifeAlpha);
         Drawer.setColorStatic(new Color(1f * blink, 0.9f * blink, 0.9f * blink, 0.75f));
-        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, 90, 270, size / 2);
+        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize + border, 90, 270, size / 2);
+//        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, 90, 270, size / 2);
         if (!lifeDelay.isOver()) {
             float alpha = (lifeDelay.getDifference() / (float) lifeDelay.getLength());
             Drawer.setColorStatic(new Color(1f * blink, 0.4f * blink, 0.4f * blink, alpha));
             int last = Methods.roundDouble(lastLife * halfLifeAngle / ((PlayerStats) player.getStats()).getMaxEnergy()) + 90;
-            Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, last, size / 2);
-
+            Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize + border, startAngle, last, size / 2);
+//            Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, last, size / 2);
         }
         Drawer.setColorStatic(new Color(0.8f * blink, 0.1f * blink, 0.1f * blink));
-        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, endAngle, size / 2);
+        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize + border, startAngle, endAngle, size / 2);
+//        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, endAngle, size / 2);
     }
 
     private void renderEnergy() {
@@ -330,20 +358,24 @@ public class MyGUI extends GUIObject {
         if (!energyLowDelay.isOver()) {
             Drawer.setColorStatic(new Color(0.9f, 0.8f, 0.2f));
         }
-        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, 270, 450, size / 2);
+        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize + border, 270, 450, size / 2);
+//        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, 270, 450, size / 2);
         if (!energyLowDelay.isOver()) {
             Drawer.setColorStatic(new Color(0.45f, 0.4f, 0.1f));
             int last = 450 - Methods.roundDouble(energyNeeded * halfEnergyAngle / ((PlayerStats) player.getStats()).getMaxEnergy());
-            Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, last, endAngle, size / 2);
+            Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize + border, last, endAngle, size / 2);
+//            Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, last, endAngle, size / 2);
         }
         if (energyLowDelay.isOver() && !energyDelay.isOver()) {
             float alpha = (energyDelay.getDifference() / (float) energyDelay.getLength());
             Drawer.setColorStatic(new Color(0.4f, 0.4f, 1f, alpha));
             int last = 450 - Methods.roundDouble(lastEnergy * halfEnergyAngle / ((PlayerStats) player.getStats()).getMaxEnergy());
-            Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, last, endAngle, size / 2);
+            Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize + border, last, endAngle, size / 2);
+//            Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, last, endAngle, size / 2);
         }
         Drawer.setColorStatic(new Color(0.1f, 0.2f, 0.8f));
-        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, endAngle, size / 2);
+        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize + border, startAngle, endAngle, size / 2);
+//        Drawer.drawBow(size + border, size + border, size + innerSize - 1, innerSize, startAngle, endAngle, size / 2);
     }
 
     private void renderPairArrow() {
