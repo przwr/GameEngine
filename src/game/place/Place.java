@@ -82,7 +82,7 @@ public abstract class Place extends ScreenPlace {
                 currentCamera = (players[player].getCamera());
                 Map map = players[player].getMap();
                 if (map != null) {
-//                    Drawer.setCurrentColor(map.getLightColor());
+                    Drawer.setCurrentColor(map.getLightColor());
                     SplitScreen.setSplitScreen(this, playersCount, player);
                     if (player == 0 || !singleCamera) {
                         if (Main.backgroundLoader.isFirstLoaded() || Main.backgroundLoader.allLoaded()) {
@@ -197,12 +197,7 @@ public abstract class Place extends ScreenPlace {
         }
         Drawer.setCurrentColor(Color.white);
         currentCamera.neutralizeEffect();
-//        if (g) {
         currentCamera.renderGUI();
-//            g = false;
-//        } else {
-//            g = true;
-//        }
     }
 
     private void manageFading(Map map) {
