@@ -70,7 +70,7 @@ public class SpawnPoint extends GameObject {
                     }
                     try {
                         Mob m = mob.newInstance();
-                        m.initialize(getX(), getY(), map.place, map.getNextMobID());
+                        m.initialize(getX(), getY(), map.place);
                         m.setSpawner(this);
                         map.addObject(m);
                         System.out.println("Adding " + m.getName());

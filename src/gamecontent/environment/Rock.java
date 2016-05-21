@@ -21,8 +21,8 @@ import game.place.Place;
  */
 public class Rock extends Mob {
 
-    public Rock(int x, int y, Place place, short mobID) {
-        super(x, y, 3, 400, "rock", place, "rock", true, mobID);
+    public Rock(int x, int y, Place place) {
+        super(x, y, 3, 400, "rock", place, "rock", true, place.getNextMobID());
         setCollision(Rectangle.create(appearance.getActualWidth(), appearance.getActualWidth() / 2, OpticProperties.NO_SHADOW, this));
         setDepth(-collision.getHeight() / 2);
         setHasStaticShadow(true);
@@ -63,7 +63,7 @@ public class Rock extends Mob {
     }
 
     @Override
-    public void initialize(int x, int y, Place place, short ID) {
+    public void initialize(int x, int y, Place place) {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }

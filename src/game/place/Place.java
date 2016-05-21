@@ -54,6 +54,7 @@ public abstract class Place extends ScreenPlace {
     public Map loadingMap;
     public boolean changeSSMode, singleCamera, firstMapsToAddActive;
     public int splitScreenMode, playersCount;
+    protected short mobID = 0, itemID = 0;
     protected SpriteBase sprites;
     protected short mapIDCounter = 0;
     boolean g = true;
@@ -348,6 +349,14 @@ public abstract class Place extends ScreenPlace {
         BackgroundLoader.base = sprites;
         sprites = null;
         Main.backgroundLoader.unloadAllTextures();
+    }
+
+    public short getNextMobID() {
+        return mobID++;
+    }
+
+    public short getNextItemID() {
+        return itemID++;
     }
 
     private interface renderType {

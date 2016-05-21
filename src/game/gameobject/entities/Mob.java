@@ -19,7 +19,6 @@ import org.newdawn.slick.Color;
 
 import java.util.ArrayList;
 import java.util.List;
-import sprites.Animation;
 
 /**
  * @author przemek
@@ -49,7 +48,7 @@ public abstract class Mob extends Entity {
         initialize(x, y, speed, hearRange, name, place, spriteName, solid, mobID, NPC);
     }
 
-    public abstract void initialize(int x, int y, Place place, short ID);
+    public abstract void initialize(int x, int y, Place place);
 
     public void initialize(int x, int y, double speed, int hearRange, String name, Place place, String spriteName, boolean solid, short mobID, boolean... npc) {
         this.place = place;

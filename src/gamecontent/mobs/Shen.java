@@ -21,14 +21,10 @@ import game.gameobject.interactive.InteractiveResponse;
 import game.gameobject.interactive.activator.UpdateBasedActivator;
 import game.gameobject.interactive.collision.CircleInteractiveCollision;
 import game.gameobject.stats.MobStats;
-import game.gameobject.stats.Stats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
-import gamecontent.environment.Corpse;
 import net.jodk.lang.FastMath;
-import sprites.Animation;
-import sprites.SpriteSheet;
 
 /**
  * @author przemek
@@ -275,8 +271,8 @@ public class Shen extends Mob {
     }
 
 
-    public Shen(int x, int y, Place place, short ID) {
-        super(x, y, 1, 512, "Shen", place, "shen", true, ID);
+    public Shen(int x, int y, Place place) {
+        super(x, y, 1, 512, "Shen", place, "shen", true, place.getNextMobID());
         setUp();
     }
 
@@ -314,8 +310,8 @@ public class Shen extends Mob {
     }
 
     @Override
-    public void initialize(int x, int y, Place place, short ID) {
-        super.initialize(x, y, 1, 512, "Shen", place, "shen", true, ID);
+    public void initialize(int x, int y, Place place) {
+        super.initialize(x, y, 1, 512, "Shen", place, "shen", true, place.getNextMobID());
         setUp();
     }
 
@@ -467,10 +463,10 @@ public class Shen extends Mob {
     }
 
     @Override
-    public void deathReaction(InteractiveResponse response) {        
+    public void deathReaction(InteractiveResponse response) {
         animation.setFPS(4);
         animation.animateIntervalInDirectionOnce(getDirection8Way(), 15, 16);
         super.deathReaction(response);
     }
-    
+
 }

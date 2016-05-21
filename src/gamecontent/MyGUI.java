@@ -12,6 +12,7 @@ import engine.view.SplitScreen;
 import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.entities.Player;
+import game.gameobject.items.Item;
 import game.gameobject.stats.PlayerStats;
 import game.place.Place;
 import game.place.cameras.Camera;
@@ -20,6 +21,8 @@ import org.newdawn.slick.Color;
 import sounds.Sound;
 import sprites.SpriteSheet;
 import sprites.vbo.VertexBufferObject;
+
+import java.util.ArrayList;
 
 /**
  * @author Wojtek
@@ -35,7 +38,9 @@ public class MyGUI extends GUIObject {
     private float lastLife, lastEnergy, energyNeeded;
     private boolean riseLifeAlpha, on = true;
     private Color color = new Color(0, 0, 0);
-    private Delay lifeDelay = Delay.createInSeconds(1), energyDelay = Delay.createInSeconds(1), energyLowDelay = Delay.createInMilliseconds(250);
+    private Delay lifeDelay = Delay.createInSeconds(1),
+            energyDelay = Delay.createInSeconds(1),
+            energyLowDelay = Delay.createInMilliseconds(250);
     private VertexBufferObject arrows, rings;
     private int[] placement = new int[2 * 3];
     private int corner = LEFT_TOP;
@@ -174,7 +179,6 @@ public class MyGUI extends GUIObject {
     private void renderHandyMenu() {
         if (player.usesHandyMenu()) {
             int menuHeight = 384 - (2 * size + 4 * border) - 4;
-            int menuWidth = 512 - 4 * border - 4;
             int secondPartHeight = size + 3 * border;
             int secondPartWidth = 2 * size + 3 * border - 10;
             switch (corner) {
@@ -191,48 +195,56 @@ public class MyGUI extends GUIObject {
                     Drawer.regularShader.translate(-2, -menuHeight - border + 1);
                     break;
             }
-            Drawer.setColorStatic(0.4f, 0.4f, 0.4f, 0.8f);
-            Drawer.drawRectangle(0, 0, secondPartWidth, menuHeight);
-            drawEquipmentSlots(12, 3, 50);
 
-
-            Drawer.setColorStatic(0.5f, 0.4f, 0.3f, 0.8f);
-
-            int space = 50;
-            int xSlots = 6;
-            int ySlots = 6;
-            int xBackpack = 6 + xSlots * 50;
-            int yBackpack = 4 + ySlots * 50;
-            switch (corner) {
-                case LEFT_TOP:
-                    Drawer.regularShader.translateNoReset(secondPartWidth + 6, -secondPartHeight);
-                    break;
-                case RIGHT_TOP:
-                    Drawer.regularShader.translateNoReset(-xBackpack - 10, -secondPartHeight);
-                    break;
-                case LEFT_BOTTOM:
-                    Drawer.regularShader.translateNoReset(secondPartWidth + 6, menuHeight + secondPartHeight - yBackpack);
-                    break;
-                case RIGHT_BOTTOM:
-                    Drawer.regularShader.translateNoReset(-xBackpack - 10, menuHeight + secondPartHeight - yBackpack);
-                    break;
+            if (true) {
+                Drawer.setColorStatic(0.4f, 0.4f, 0.4f, 0.8f);
+                Drawer.drawRectangle(0, 0, secondPartWidth, menuHeight);
+                drawEquipmentSlots(12, 3, 50);
             }
-            Drawer.drawRectangle(0, 0, xBackpack, yBackpack);
-            drawEquipmentSlots(xSlots * ySlots, xSlots, space);
+
+            if (true) {
+                Drawer.setColorStatic(0.5f, 0.4f, 0.3f, 0.8f);
+                int space = 50;
+                int xSlots = 3;
+                int ySlots = 3;
+                int xBackpack = 6 + xSlots * 50;
+                int yBackpack = 4 + ySlots * 50;
+                switch (corner) {
+                    case LEFT_TOP:
+                        Drawer.regularShader.translateNoReset(secondPartWidth + 8, -secondPartHeight);
+                        break;
+                    case RIGHT_TOP:
+                        Drawer.regularShader.translateNoReset(-xBackpack - 8, -secondPartHeight);
+                        break;
+                    case LEFT_BOTTOM:
+                        Drawer.regularShader.translateNoReset(secondPartWidth + 8, menuHeight + secondPartHeight - yBackpack);
+                        break;
+                    case RIGHT_BOTTOM:
+                        Drawer.regularShader.translateNoReset(-xBackpack - 8, menuHeight + secondPartHeight - yBackpack);
+                        break;
+                }
+                Drawer.drawRectangle(0, 0, xBackpack, yBackpack);
+                drawEquipmentSlots(xSlots * ySlots, xSlots, space);
+            }
         }
     }
 
     private void drawEquipmentSlots(int all, int cols, int space) {
+        ArrayList<Item> items = player.getItems();
         Drawer.regularShader.translateNoReset(-4, -5);
         for (int i = 0; i < all; i++) {
-            renderItemIcon(i % 2);
+            if (items != null && items.size() > i) {
+                renderItemIcon(1);
+            } else {
+                renderItemIcon(0);
+            }
             renderIconRing();
             Drawer.regularShader.translateNoReset(space, 0);
             if ((i + 1) % cols == 0) {
                 Drawer.regularShader.translateNoReset(-space * cols, space);
             }
         }
-        Drawer.regularShader.translateNoReset(6, -195);
+        Drawer.regularShader.translateNoReset(4, -195);
     }
 
     private void renderIcons() {

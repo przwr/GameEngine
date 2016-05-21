@@ -70,35 +70,35 @@ public class TestMap extends Map {
 
     @Override
     public void populate() {
-        MoneyBag mb = new MoneyBag(3010, 1400, place, itemID++);
+        MoneyBag mb = new MoneyBag(3010, 1400, place);
         addObject(mb);
 
-        Shen shen = new Shen(3010, 1226, place, mobID++);
+        Shen shen = new Shen(3010, 1226, place);
         addObject(shen);
 
         addObject(new Fire(2620, 1240, place));
 
         Rock rock;
-        addObject(new Dummy(4643, 1793, place, mobID++));
-        rock = new Rock(4060, 2976, place, mobID++);
+        addObject(new Dummy(4643, 1793, place));
+        rock = new Rock(4060, 2976, place);
         addObject(rock);
-        rock = new Rock(4060, 6976, place, mobID++);
+        rock = new Rock(4060, 6976, place);
         addObject(rock);
-        addObject(new Melodia(4034, 1811, place, mobID++, shen, rock));
-        addObject(new Blazag(5473, 3783, place, mobID++));
-        addObject(new Blazag(5722, 3797, place, mobID++));
-        addObject(new Blazag(5311, 3761, place, mobID++));
-        addObject(new Nutka(3663, 3084, place, mobID++));
-        //addObject(new Magician(2906, 763, place, mobID++));
+        addObject(new Melodia(4034, 1811, place, shen, rock));
+        addObject(new Blazag(5473, 3783, place));
+        addObject(new Blazag(5722, 3797, place));
+        addObject(new Blazag(5311, 3761, place));
+        addObject(new Nutka(3663, 3084, place));
+        //addObject(new Magician(2906, 763, place));
         Plurret[] plurrets = new Plurret[]{
-                new Plurret(7043, 4034, place, mobID++),
-                new Plurret(8618, 3609, place, mobID++),
-                new Plurret(8281, 4084, place, mobID++)
+                new Plurret(7043, 4034, place),
+                new Plurret(8618, 3609, place),
+                new Plurret(8281, 4084, place)
         };
         addObject(plurrets[0]);
         addObject(plurrets[1]);
         addObject(plurrets[2]);
-        addObject(new Tercja(7104, 3667, place, mobID++, plurrets));
+        addObject(new Tercja(7104, 3667, place, plurrets));
 
         addObject(SpawnPoint.createInVisible(8780, 3871, 54, 38, "Shen spawn", Shen.class, 7, 3));
     }

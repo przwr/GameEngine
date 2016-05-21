@@ -22,17 +22,6 @@ public class Item extends GameObject {
         }
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
     public float getWeight() {
         return weight;
     }

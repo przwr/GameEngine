@@ -297,8 +297,8 @@ public class Blazag extends Mob {
     public Blazag() {
     }
 
-    public Blazag(int x, int y, Place place, short ID) {
-        super(x, y, 5, 1024, "Blazag", place, "blazag", true, ID);
+    public Blazag(int x, int y, Place place) {
+        super(x, y, 5, 1024, "Blazag", place, "blazag", true, place.getNextMobID());
         setUp();
     }
 
@@ -353,8 +353,8 @@ public class Blazag extends Mob {
     }
 
     @Override
-    public void initialize(int x, int y, Place place, short ID) {
-        super.initialize(x, y, 5, 1024, "Blazag", place, "blazag", true, ID);
+    public void initialize(int x, int y, Place place) {
+        super.initialize(x, y, 5, 1024, "Blazag", place, "blazag", true, place.getNextMobID());
         setUp();
     }
 

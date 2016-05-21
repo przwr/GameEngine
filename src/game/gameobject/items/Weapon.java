@@ -14,8 +14,8 @@ public class Weapon extends Item {
     private float knockback = 1;
 
 
-    public Weapon(int x, int y, String name, Place place, float weight, String spriteName, short itemID, byte type) {
-        super(x, y, name, place, weight, spriteName, itemID);
+    public Weapon(int x, int y, String name, Place place, float weight, String spriteName, byte type) {
+        super(x, y, name, place, weight, spriteName, place != null ? place.getNextItemID() : -1);
         this.type = type;
     }
 

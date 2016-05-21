@@ -33,16 +33,16 @@ public class Fire extends GameObject {
         this.place = place;
         particleSource = new ParticleSource(2.5f, 5, 0.001f, 0.8f, 30, place.getSpriteSheet("particle", ""));
         particleSource.setXSpread(24);
-        particleSource.setYSpread(4);
+        particleSource.setYSpread(8);
         particleSource.setPPF(16);
-        particleSource.setSpeed(0.75f);
+        particleSource.setSpeed(0.8f);
         particleSource.setGravity(0f);
         particleSource.setDrag(0.01f);
         particleSource.setLifeLength(25);
         particleSource.setFrames(7);
-        particleSource.updateParticles(0, 0, 0);
         particleSource.setXDirectionFactor(-1f);
-        particleSource.setYDirectionBalance(-1f);
+        particleSource.setYDirectionBalance(-0.5f);
+        particleSource.updateParticles(0, 0, 0);
         setCollision(Rectangle.create(0, 0, OpticProperties.NO_SHADOW, this));
         setToUpdate(true);
         setEmitter(true);
@@ -56,24 +56,18 @@ public class Fire extends GameObject {
 
     @Override
     public void update() {
-        particleSource.setXSpread(24);
-        particleSource.setYSpread(8);
-        particleSource.setPPF(16);
-        particleSource.setSpeed(0.8f);
-        particleSource.setGravity(0f);
-        particleSource.setDrag(0.01f);
-        particleSource.setLifeLength(25);
-        particleSource.setFrames(7);
-        particleSource.setXDirectionFactor(-1f);
-        particleSource.setYDirectionBalance(-0.5f);
-
         particleSource.updateParticles(updatePosition.getX(), updatePosition.getY(), 0);
         updatePosition.set((int) Methods.xRadius(direction, 4), (int) Methods.yRadius(direction, 4));
         direction += 18 + ParticleSource.random.randomInRange(0, 4);
-        lights.get(0).setXEffect(-updatePosition.getX());
-        lights.get(0).setYEffect(-updatePosition.getY());
         if (!isEmits() && Main.backgroundLoader.allLoaded()) {
             setEmits(true);
+        }
+        if (lights.get(0).getSizeChange() <= 0.9f) {
+            lights.get(0).setSizeChange(lights.get(0).getSizeChange() + ParticleSource.random.randomInRange(10, 10) / 1000f);
+        } else if (lights.get(0).getSizeChange() >= 1f) {
+            lights.get(0).setSizeChange(lights.get(0).getSizeChange() - ParticleSource.random.randomInRange(10, 10) / 1000f);
+        } else {
+            lights.get(0).setSizeChange(lights.get(0).getSizeChange() + ParticleSource.random.randomInRange(-10, 10) / 1000f);
         }
     }
 

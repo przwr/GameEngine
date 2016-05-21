@@ -2,7 +2,6 @@ package game.gameobject.stats;
 
 import collision.OpticProperties;
 import game.Settings;
-import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.InteractiveResponse;
 import game.gameobject.temporalmodifiers.DeathChanger;
@@ -13,26 +12,16 @@ import gamecontent.MyPlayer;
 import gamecontent.effects.DamageNumber;
 
 import static game.gameobject.interactive.InteractiveResponse.*;
-import sounds.Sound;
 
 /**
  * Created by przemek on 10.08.15.
  */
 public class PlayerStats extends Stats {
 
-    private float energy = 100;
     private final float maxEnergy = 100;
     private final Player player;
+    private float energy = 100;
 
-    @Override
-    public void initializeSounds() {
-        if (deadSound == null) {
-            deadSound = Settings.sounds.get3DSoundEffect("pichuun.wav", owner);
-            deadSound.setSoundRanges(0.8f, 1.1f);
-            deadSound.setRandomized(0.1f);
-        }
-    }
-    
     public PlayerStats(Player owner) {
         super(owner);
         this.player = owner;
@@ -42,6 +31,15 @@ public class PlayerStats extends Stats {
         protection = 10;
         protectionSideModifier = 0.8f;
         protectionBackModifier = 0.2f;
+    }
+
+    @Override
+    public void initializeSounds() {
+        if (deadSound == null) {
+            deadSound = Settings.sounds.get3DSoundEffect("pichuun.wav", owner);
+            deadSound.setSoundRanges(0.8f, 1.1f);
+            deadSound.setRandomized(0.1f);
+        }
     }
 
     @Override
@@ -127,7 +125,7 @@ public class PlayerStats extends Stats {
     }
 
     public void decreaseEnergy(float amount) {
-        if (amount > maxEnergy * 0.01f) {
+        if (amount > maxEnergy * 0.03f) {
             ((MyPlayer) player).getGUI().activateEnergyHistory(energy);
         }
         energy -= amount;

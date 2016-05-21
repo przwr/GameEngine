@@ -25,8 +25,8 @@ public class Tercja extends Mob {
     private String dialog = "0";
     private int left;
 
-    public Tercja(int x, int y, Place place, short mobID, Plurret[] plurrets) {
-        super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
+    public Tercja(int x, int y, Place place, Plurret[] plurrets) {
+        super(x, y, 3, 400, "NPC", place, "melodia", true, place.getNextMobID(), true);
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
         setHasStaticShadow(true);
@@ -77,7 +77,7 @@ public class Tercja extends Mob {
 
             player.getTextController().addEventOnBranchStart(() -> {
                 if (player.getSecondWeapon() == null) {
-                    Weapon bow = new Weapon(0, 0, "Bow", place, 2, null, map.getNextItemID(), Weapon.BOW);
+                    Weapon bow = new Weapon(0, 0, "Bow", place, 2, null, Weapon.BOW);
                     bow.setModifier(1f);
                     player.addWeapon(bow);
                 }
@@ -112,7 +112,7 @@ public class Tercja extends Mob {
     }
 
     @Override
-    public void initialize(int x, int y, Place place, short ID) {
+    public void initialize(int x, int y, Place place) {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }

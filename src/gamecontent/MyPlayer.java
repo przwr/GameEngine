@@ -29,6 +29,7 @@ import game.place.map.Map;
 import game.place.map.WarpPoint;
 import game.text.effects.TextController;
 import gamecontent.equipment.Cloth;
+import gamedesigner.ObjectPlayer;
 import net.jodk.lang.FastMath;
 import net.packets.MultiPlayerUpdate;
 import net.packets.Update;
@@ -42,8 +43,6 @@ import java.util.ArrayList;
 import static game.gameobject.interactive.Interactive.STRENGTH_HURT;
 import static game.gameobject.items.Weapon.*;
 import static gamecontent.MyController.*;
-import gamedesigner.ObjectPlayer;
-import java.util.List;
 
 /**
  * @author przemek
@@ -66,7 +65,7 @@ public class MyPlayer extends Player {
     private Weapon firstWeapon;
     private Weapon secondWeapon;
     private Weapon lastWeapon;
-    private Weapon universal = new Weapon(0, 0, "Bare Hands", place, 0, null, (short) -1, UNIVERSAL);
+    private Weapon universal = new Weapon(0, 0, "Bare Hands", place, 0, null, UNIVERSAL);
     private ArrayList<InteractionSet> actionSets = new ArrayList<>();
     private int activeActionSet;
     private Point centralPoint;
@@ -88,11 +87,11 @@ public class MyPlayer extends Player {
         actionSets.add(new InteractionSet(SWORD));
         actionSets.add(new InteractionSet(BOW));
         if (!Main.TEST) {
-            Weapon sword = new Weapon(0, 0, "Sword", place, 2, null, (short) -1, SWORD);
+            Weapon sword = new Weapon(0, 0, "Sword", place, 2, null, SWORD);
             this.weapon.setWearing(true);
             sword.setModifier(1.2f);
             firstWeapon = sword;
-            Weapon bow = new Weapon(0, 0, "Bow", place, 2, null, (short) -1, BOW);
+            Weapon bow = new Weapon(0, 0, "Bow", place, 2, null, BOW);
             bow.setModifier(5f);
             secondWeapon = bow;
         }
@@ -255,9 +254,9 @@ public class MyPlayer extends Player {
             ArrayList<GameObject> close = new ArrayList<>();
             for (GameObject object : map.getInteractiveObjects()) {
                 if (Methods.pointDistanceSimple(object.getX(), object.getY(),
-                        getX(), getY()) <= Place.tileSize * 1.5 + Math.max(object.getActualWidth(), object.getActualHeight()) / 2 
-                    && Math.abs(Methods.angleDifference(getDirection(), 
-                            (int) Methods.pointAngleCounterClockwise(getX(), getY(), object.getX(), object.getY()))) <= 80) {
+                        getX(), getY()) <= Place.tileSize * 1.5 + Math.max(object.getActualWidth(), object.getActualHeight()) / 2
+                        && Math.abs(Methods.angleDifference(getDirection(),
+                        (int) Methods.pointAngleCounterClockwise(getX(), getY(), object.getX(), object.getY()))) <= 80) {
                     close.add(object);
                 }
             }

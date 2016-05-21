@@ -70,7 +70,7 @@ public class MyNPC extends Mob {
     }
 
     @Override
-    public void initialize(int x, int y, Place place, short ID) {
+    public void initialize(int x, int y, Place place) {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }

@@ -55,7 +55,7 @@ import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
  */
 public class Main {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final boolean LOG = false;
     public static final boolean MUSIC = true;
     private static final Delay delay = Delay.createInMilliseconds(500, true);
@@ -177,7 +177,7 @@ public class Main {
 
     private static void createDisplay() {
         try {
-            ContextAttribs contextAttributes = new ContextAttribs(3, 3)
+            ContextAttribs contextAttributes = new ContextAttribs(3, 2)
                     .withForwardCompatible(true)
                     .withProfileCore(true);
             PixelFormat pixelFormat = new PixelFormat(32, 0, 24, 0, Settings.samplesCount);

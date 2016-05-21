@@ -53,11 +53,11 @@ public class CaveTest extends Map {
 
     @Override
     public void populate() {
-        MoneyBag mb = new MoneyBag(4350, 7461, place, itemID++);
+        MoneyBag mb = new MoneyBag(4350, 7461, place);
         addObject(mb);
-        Zuocieyka zuo = new Zuocieyka(2216, 3117, place, mobID++, mb);
+        Zuocieyka zuo = new Zuocieyka(2216, 3117, place, mb);
         addObject(zuo);
-        addObject(new Sonata(1165, 1297, place, mobID++, zuo, mb));
+        addObject(new Sonata(1165, 1297, place, zuo, mb));
         int max = 6;
         addObject(SpawnPoint.createInVisible(2176, 5120, 54, 38, "Tongub spawn", Tongub.class, 2, max));
         addObject(SpawnPoint.createInVisible(2880, 4096, 54, 38, "Tongub spawn", Tongub.class, 2, max));

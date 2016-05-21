@@ -24,8 +24,6 @@ import game.gameobject.stats.MobStats;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
 import net.jodk.lang.FastMath;
-import sprites.Animation;
-import sprites.SpriteSheet;
 
 import java.util.List;
 
@@ -247,8 +245,8 @@ public class Tongub extends Mob {
     public Tongub() {
     }
 
-    public Tongub(int x, int y, Place place, short ID) {
-        super(x, y, 3, 768, "Tongub", place, "tongub", true, ID);
+    public Tongub(int x, int y, Place place) {
+        super(x, y, 3, 768, "Tongub", place, "tongub", true, place.getNextMobID());
         setUp();
     }
 
@@ -260,8 +258,8 @@ public class Tongub extends Mob {
     }
 
     @Override
-    public void initialize(int x, int y, Place place, short ID) {
-        super.initialize(x, y, 3, 768, "Tongub", place, "tongub", true, ID);
+    public void initialize(int x, int y, Place place) {
+        super.initialize(x, y, 3, 768, "Tongub", place, "tongub", true, place.getNextMobID());
         setUp();
     }
 

@@ -70,7 +70,6 @@ public abstract class Map {
     protected Placement placement;
     protected int xAreas;
     protected int yAreas;
-    protected short mobID = 0, itemID;
     protected Color lightColor;
     protected List<GameObject> depthObjects, foregroundTiles;
     protected int cameraXStart, cameraYStart, cameraXEnd, cameraYEnd;     //Camera's variables for current rendering
@@ -848,14 +847,6 @@ public abstract class Map {
 
     public Set<Integer> getAreasToUpdate() {
         return areasToUpdate;
-    }
-
-    public short getNextMobID() {
-        return mobID++;
-    }
-
-    public short getNextItemID() {
-        return itemID++;
     }
 
     public AreaConnector[] getAreaConnectors() {

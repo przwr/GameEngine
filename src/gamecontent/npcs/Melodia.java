@@ -23,8 +23,6 @@ import gamecontent.MyPlayer;
 import gamecontent.environment.Rock;
 import gamecontent.mobs.Shen;
 import sounds.Sound3D;
-import sprites.Animation;
-import sprites.SpriteSheet;
 
 import static game.gameobject.items.Weapon.SWORD;
 
@@ -38,8 +36,8 @@ public class Melodia extends Mob {
     private String dialog = "0";
     private Sound3D piano;
 
-    public Melodia(int x, int y, Place place, short mobID, Shen shen, Rock rock) {
-        super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
+    public Melodia(int x, int y, Place place, Shen shen, Rock rock) {
+        super(x, y, 3, 400, "NPC", place, "melodia", true, place.getNextMobID(), true);
         initializeSounds();
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
@@ -91,7 +89,7 @@ public class Melodia extends Mob {
             player.getTextController().startFromFile("npcdemo", dialog);
             player.getTextController().addEventOnBranchEnd(() -> {
                 if (player.getFirstWeapon() == null) {
-                    Weapon sword = new Weapon(0, 0, "Sword", place, 2, null, map.getNextItemID(), SWORD);
+                    Weapon sword = new Weapon(0, 0, "Sword", place, 2, null, SWORD);
                     sword.setModifier(1.2f);
                     player.addWeapon(sword);
                 }
@@ -133,7 +131,7 @@ public class Melodia extends Mob {
     }
 
     @Override
-    public void initialize(int x, int y, Place place, short ID) {
+    public void initialize(int x, int y, Place place) {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }

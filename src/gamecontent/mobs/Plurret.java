@@ -15,8 +15,6 @@ import game.gameobject.entities.Player;
 import game.gameobject.stats.MobStats;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
-import sprites.Animation;
-import sprites.SpriteSheet;
 
 import java.util.List;
 
@@ -137,8 +135,8 @@ public class Plurret extends Mob {
     public Plurret() {
     }
 
-    public Plurret(int x, int y, Place place, short ID) {
-        super(x, y, 10, 512, "Plurret", place, "plurret", true, ID);
+    public Plurret(int x, int y, Place place) {
+        super(x, y, 10, 512, "Plurret", place, "plurret", true, place.getNextMobID());
         setUp();
     }
 
@@ -165,8 +163,8 @@ public class Plurret extends Mob {
     }
 
     @Override
-    public void initialize(int x, int y, Place place, short ID) {
-        super.initialize(x, y, 10, 1024, "Plurret", place, "plurret", true, ID);
+    public void initialize(int x, int y, Place place) {
+        super.initialize(x, y, 10, 1024, "Plurret", place, "plurret", true, place.getNextMobID());
         setUp();
     }
 

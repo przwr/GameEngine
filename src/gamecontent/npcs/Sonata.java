@@ -23,12 +23,12 @@ import java.util.ArrayList;
  */
 public class Sonata extends Mob {
 
-    private String dialog = "0";
     private final MoneyBag money;
     private final Zuocieyka zuo;
+    private String dialog = "0";
 
-    public Sonata(int x, int y, Place place, short mobID, Zuocieyka zuo, MoneyBag money) {
-        super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
+    public Sonata(int x, int y, Place place, Zuocieyka zuo, MoneyBag money) {
+        super(x, y, 3, 400, "NPC", place, "melodia", true, place.getNextMobID(), true);
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
         setHasStaticShadow(true);
@@ -98,7 +98,7 @@ public class Sonata extends Mob {
     }
 
     @Override
-    public void initialize(int x, int y, Place place, short ID) {
+    public void initialize(int x, int y, Place place) {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }

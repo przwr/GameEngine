@@ -24,8 +24,8 @@ public class Zuocieyka extends Mob {
     private final MoneyBag money;
     private String dialog = "0";
 
-    public Zuocieyka(int x, int y, Place place, short mobID, MoneyBag money) {
-        super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
+    public Zuocieyka(int x, int y, Place place, MoneyBag money) {
+        super(x, y, 3, 400, "NPC", place, "melodia", true, place.getNextMobID(), true);
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
         setHasStaticShadow(true);
@@ -75,7 +75,7 @@ public class Zuocieyka extends Mob {
     }
 
     @Override
-    public void initialize(int x, int y, Place place, short ID) {
+    public void initialize(int x, int y, Place place) {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }

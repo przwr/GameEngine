@@ -34,11 +34,11 @@ public class Light {
     private Color color;
     private SpriteSheet spriteSheet;
     private int xCenterShift, yCenterShift;
-    private int xEffect, yEffect;
     private int piece;
     private int widthWholeLight, heightWholeLight;
     private Sprite sprite;
     private FrameBufferObject frameBufferObject;
+    private float sizeChange = 1f;
 
     private Light(Sprite sprite, Color color, int width, int height, GameObject owner, boolean giveShadows) {
         this.color = color;
@@ -110,7 +110,22 @@ public class Light {
         if (spriteSheet != null) {
             spriteSheet.renderPiece(piece);
         } else {
-            sprite.render();
+            if (sizeChange != 1f) {
+                int widthPart = (int) ((1f - sizeChange) * 0.5f * width) + 1;
+                int heightPart = (int) ((1f - sizeChange) * 0.5f * height) + 1;
+                Drawer.setColorStatic(Color.black);
+                Drawer.drawRectangle(0, 0, width, heightPart);
+                Drawer.drawRectangle(0, height - heightPart, width, heightPart);
+                Drawer.drawRectangle(0, heightPart, widthPart, height - 2 * heightPart);
+                Drawer.drawRectangle(width - widthPart, heightPart, widthPart, height - 2 * heightPart);
+                Drawer.setColorStatic(color.r, color.g, color.b, 1f);
+                Drawer.regularShader.translateNoReset((1f - sizeChange) * 0.5f * width, (1f - sizeChange) * 0.5f * height);
+                Drawer.regularShader.scaleNoReset(sizeChange, sizeChange);
+                sprite.render();
+                Drawer.regularShader.scaleNoReset(1f / sizeChange, 1f / sizeChange);
+            } else {
+                sprite.render();
+            }
         }
     }
 
@@ -158,11 +173,11 @@ public class Light {
     }
 
     public int getX() {
-        return owner.getX() + xEffect;
+        return owner.getX();
     }
 
     public int getY() {
-        return owner.getY() + yEffect;
+        return owner.getY();
     }
 
     public int getXCenterShift() {
@@ -263,21 +278,11 @@ public class Light {
         }
     }
 
-    public int getXEffect() {
-        return xEffect;
+    public float getSizeChange() {
+        return sizeChange;
     }
 
-    public void setXEffect(int xEffect) {
-        this.xEffect = xEffect;
+    public void setSizeChange(float sizeChange) {
+        this.sizeChange = sizeChange;
     }
-
-    public int getYEffect() {
-        return yEffect;
-    }
-
-    public void setYEffect(int yEffect) {
-        this.yEffect = yEffect;
-    }
-
-
 }

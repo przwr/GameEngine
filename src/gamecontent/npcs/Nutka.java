@@ -18,8 +18,8 @@ public class Nutka extends Mob {
 
     private String dialog = "0";
 
-    public Nutka(int x, int y, Place place, short mobID) {
-        super(x, y, 3, 400, "NPC", place, "melodia", true, mobID, true);
+    public Nutka(int x, int y, Place place) {
+        super(x, y, 3, 400, "NPC", place, "melodia", true, place.getNextMobID(), true);
         setCollision(Rectangle.create(Place.tileSize / 3, Place.tileSize / 3, OpticProperties.NO_SHADOW, this));
         stats = new NPCStats(this);
         setHasStaticShadow(true);
@@ -62,7 +62,7 @@ public class Nutka extends Mob {
     }
 
     @Override
-    public void initialize(int x, int y, Place place, short ID) {
+    public void initialize(int x, int y, Place place) {
         if (Main.DEBUG) {
             System.err.println("Empty method - " + Thread.currentThread().getStackTrace()[1].getMethodName() + " - from " + this.getClass());
         }

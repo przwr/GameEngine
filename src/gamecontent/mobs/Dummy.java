@@ -29,8 +29,8 @@ public class Dummy extends Mob {
     public Dummy() {
     }
 
-    public Dummy(int x, int y, Place place, short ID) {
-        super(x, y, 1, 500, "Dummy", place, "dummy", true, ID);
+    public Dummy(int x, int y, Place place) {
+        super(x, y, 1, 500, "Dummy", place, "dummy", true, place.getNextMobID());
         setUp();
     }
 
@@ -48,8 +48,8 @@ public class Dummy extends Mob {
     }
 
     @Override
-    public void initialize(int x, int y, Place place, short ID) {
-        super.initialize(x, y, 1, 500, "Dummy", place, "dummy", true, ID);
+    public void initialize(int x, int y, Place place) {
+        super.initialize(x, y, 1, 500, "Dummy", place, "dummy", true, place.getNextMobID());
         setUp();
     }
 

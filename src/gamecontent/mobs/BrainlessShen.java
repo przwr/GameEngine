@@ -28,8 +28,8 @@ public class BrainlessShen extends Mob {
     public BrainlessShen() {
     }
 
-    public BrainlessShen(int x, int y, Place place, short ID) {
-        super(x, y, 1, 500, "Shen", place, "shen", true, ID);
+    public BrainlessShen(int x, int y, Place place) {
+        super(x, y, 1, 500, "Shen", place, "shen", true, place.getNextMobID());
         setUp();
     }
 
@@ -49,8 +49,8 @@ public class BrainlessShen extends Mob {
     }
 
     @Override
-    public void initialize(int x, int y, Place place, short ID) {
-        super.initialize(x, y, 1, 500, "Shen", place, "shen", true, ID);
+    public void initialize(int x, int y, Place place) {
+        super.initialize(x, y, 1, 500, "Shen", place, "shen", true, place.getNextMobID());
         setUp();
     }
 
