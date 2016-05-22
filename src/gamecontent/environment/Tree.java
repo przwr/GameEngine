@@ -46,7 +46,7 @@ public class Tree extends GameObject {
     private Color leafColor;
     private int woodHeight, leafHeight;
     private float windStage, windDirectionModifier;
-    private boolean windChange, order;
+    private boolean windChange, order, shouldUpdate;
 
     private Tree(int x, int y, int width, int height, float spread, boolean leafless, boolean background) {
         initialize("Tree", x, y);
@@ -119,7 +119,7 @@ public class Tree extends GameObject {
     @Override
     public void update() {
         if (vbo != null) {
-            updateWithWind();
+            shouldUpdate = true;
         }
     }
 
@@ -155,6 +155,10 @@ public class Tree extends GameObject {
     @Override
     public void render() {
         preRender();
+        if (shouldUpdate) {
+            updateWithWind();
+            shouldUpdate = false;
+        }
         if (map != null && vbo != null) {
             Drawer.regularShader.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - woodHeight + collision.getHeightHalf());
             if (vbo.getVertexCount() > 1) {
@@ -177,7 +181,7 @@ public class Tree extends GameObject {
             Drawer.streamIndexData.clear();
             int yStart, yShift, yEnd = 0, vc = 0;
             int yMax = fbo.getHeight() - woodHeight;
-            int change = 32;
+            int change = 64;
             float xMod = 1.1f;
             float xDirection2;
             float heightShift = -fbo.getHeight() + leafHeight;

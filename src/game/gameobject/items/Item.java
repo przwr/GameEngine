@@ -1,5 +1,6 @@
 package game.gameobject.items;
 
+import engine.utilities.Drawer;
 import game.gameobject.GameObject;
 import game.place.Place;
 
@@ -7,6 +8,9 @@ import game.place.Place;
  * Created by Domi on 2016-05-02.
  */
 public class Item extends GameObject {
+
+
+    public static Item EMPTY = new EmptyItem();
     public short itemID;
     private float weight;
 
@@ -19,6 +23,14 @@ public class Item extends GameObject {
         this.setCanInteract(true);
         if (spriteName != null) {
             this.appearance = place.getSprite(spriteName, "entities/mobs", false, true);
+        }
+    }
+
+    public void renderIcon() {
+        if (appearance != null) {
+            Drawer.regularShader.translateNoReset(0, 7);
+            appearance.render();
+            Drawer.regularShader.translateNoReset(0, -7);
         }
     }
 

@@ -5,8 +5,6 @@ import engine.utilities.Drawer;
 import engine.utilities.RandomGenerator;
 import sprites.SpriteSheet;
 
-import java.util.Arrays;
-
 /**
  * Created by przemek on 27.04.16.
  */
@@ -38,6 +36,18 @@ public class ParticleSource {
         this.particles = new Particle[INITIAL_POINT_COUNT];
         this.spriteSheet = spiteSheet;
         frames = spiteSheet.getSize();
+    }
+
+    private static void insertionSort(Particle[] particles, int size) {
+        int i, j;
+        Particle key;
+        for (j = 1; j < size; j++) {
+            key = particles[j];
+            for (i = j - 1; (i >= 0) && (particles[i].getY() < key.getY()); i--) {
+                particles[i + 1] = particles[i];
+            }
+            particles[i + 1] = key;
+        }
     }
 
     public void add(int x, int y, int floatHeight, float xVelocity, float yVelocity, float heightVelocity, float lifeLength) {
@@ -106,7 +116,7 @@ public class ParticleSource {
                 emitParticle(x, y, floatHeight);
             }
         }
-        Arrays.sort(particles, 0, particlesCount);
+        insertionSort(particles, particlesCount);
     }
 
     public void render(int x, int y) {

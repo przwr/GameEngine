@@ -42,7 +42,7 @@ public class Bush extends GameObject {
     private Comparator<Point> comparator = (p1, p2) -> Math.abs(p2.getX()) * 100 - Math.abs(p1.getX()) * 100 + p1.getY() - p2.getY();
 
     private float windStage, windDirectionModifier;
-    private boolean windChange;
+    private boolean windChange, shouldUpdate;
 
     public Bush(int x, int y) {
         this(x, y, 14, 80, 0.8f);
@@ -73,6 +73,7 @@ public class Bush extends GameObject {
         instances.add(this);
         windStage = random.randomInRange(0, 31416);
         windDirectionModifier = random.randomInRange(-18, 18);
+        setToUpdate(true);
     }
 
     public static boolean allGenerated() {
@@ -121,15 +122,12 @@ public class Bush extends GameObject {
     @Override
     public void render() {
         preRender();
+        if (shouldUpdate) {
+            updateWithWind();
+            shouldUpdate = false;
+        }
         if (map != null && vbo != null) {
             Drawer.regularShader.translate(getX() - fbo.getWidth() / 2 - collision.getWidthHalf(), getY() + 20 - fbo.getHeight() + collision.getHeightHalf());
-            if (map.getWindStrength() > 2) {
-                updateWithWind();
-            } else if (vbo.getVertexCount() > 1) {
-                float[] vertices = {0};
-                int[] indices = {0};
-                vbo.updateAll(vertices, vertices, indices);
-            }
             if (vbo.getVertexCount() > 1) {
                 fbo.bindCheck();
                 vbo.renderTexturedTriangles(0, vbo.getVertexCount());
@@ -143,7 +141,7 @@ public class Bush extends GameObject {
     @Override
     public void update() {
         if (vbo != null) {
-            updateWithWind();
+            shouldUpdate = true;
         }
     }
 

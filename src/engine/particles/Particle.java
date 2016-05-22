@@ -3,7 +3,7 @@ package engine.particles;
 
 import org.lwjgl.util.vector.Vector3f;
 
-public class Particle implements Comparable {
+public class Particle {
 
     protected boolean dead;
     float lifeLength;
@@ -119,11 +119,6 @@ public class Particle implements Comparable {
 
     public float getLifePercent() {
         return elapsedTime / lifeLength;
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        return getYWithFloatHeight() - ((Particle) o).getYWithFloatHeight();
     }
 }
 

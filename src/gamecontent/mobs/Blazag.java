@@ -265,15 +265,15 @@ public class Blazag extends Mob {
                     leader = false;
                 } else {
                     if (rest.isOver()) {
-                        if (destination.getX() <= 0 || Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2
-                                / 16) {
+                        if (seconds == 0 || destination.getX() <= 0 || Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY())
+                                <= sightRange2 / 16) {
                             letGo = false;
                             destination.set(getRandomPointInDistance((int) (sightRange * 1.5), spawnPosition.getX(), spawnPosition.getY()));
                         }
                         seconds++;
                         if (seconds > max) {
                             seconds = 0;
-                            max = random.next(4);
+                            max = random.randomInRange(4, 12);
                             letGo = false;
                         }
                         rest.start();

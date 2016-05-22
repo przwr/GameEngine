@@ -84,7 +84,7 @@ public class Plurret extends Mob {
             public void update() {
 //                System.out.println("WANDER");
                 if (rest.isOver()) {
-                    if (seconds == 0) {
+                    if (seconds == 0 || destination.getX() < 0) {
                         int sign = random.next(1) == 1 ? 1 : -1;
                         int shift = (sightRange + random.next(7)) * sign;
                         destination.setX(spawnPosition.getX() + shift);

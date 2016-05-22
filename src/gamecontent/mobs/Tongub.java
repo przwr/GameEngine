@@ -218,7 +218,8 @@ public class Tongub extends Mob {
             public void update() {
 //                System.out.println("WANDER");
                 if (rest.isOver()) {
-                    if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2 / 16) {
+                    if (seconds == 0 || destination.getX() < 0 || Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <=
+                            sightRange2 / 16) {
                         closeRandomDestination(spawnPosition.getX(), spawnPosition.getY());
                         destination.set(getRandomPointInDistance((int) (sightRange * 1.5), spawnPosition.getX(), spawnPosition.getY()));
 //                        System.out.println(destination);

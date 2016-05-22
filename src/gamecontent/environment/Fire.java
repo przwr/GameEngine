@@ -27,6 +27,7 @@ public class Fire extends GameObject {
     Point updatePosition = new Point(0, 0);
     int direction = 0;
     private ParticleSource particleSource;
+    private boolean shouldUpdate;
 
     public Fire(int x, int y, Place place) {
         initialize("Fire", x, y);
@@ -39,7 +40,7 @@ public class Fire extends GameObject {
         particleSource.setGravity(0f);
         particleSource.setDrag(0.01f);
         particleSource.setLifeLength(25);
-        particleSource.setFrames(7);
+        particleSource.setFrames(6);
         particleSource.setXDirectionFactor(-1f);
         particleSource.setYDirectionBalance(-0.5f);
         particleSource.updateParticles(0, 0, 0);
@@ -56,24 +57,30 @@ public class Fire extends GameObject {
 
     @Override
     public void update() {
-        particleSource.updateParticles(updatePosition.getX(), updatePosition.getY(), 0);
-        updatePosition.set((int) Methods.xRadius(direction, 4), (int) Methods.yRadius(direction, 4));
-        direction += 18 + ParticleSource.random.randomInRange(0, 4);
-        if (!isEmits() && Main.backgroundLoader.allLoaded()) {
-            setEmits(true);
-        }
-        if (lights.get(0).getSizeChange() <= 0.9f) {
-            lights.get(0).setSizeChange(lights.get(0).getSizeChange() + ParticleSource.random.randomInRange(10, 10) / 1000f);
-        } else if (lights.get(0).getSizeChange() >= 1f) {
-            lights.get(0).setSizeChange(lights.get(0).getSizeChange() - ParticleSource.random.randomInRange(10, 10) / 1000f);
-        } else {
-            lights.get(0).setSizeChange(lights.get(0).getSizeChange() + ParticleSource.random.randomInRange(-10, 10) / 1000f);
+        shouldUpdate = true;
+    }
+
+    private void updateFire() {
+        if (shouldUpdate) {
+            particleSource.updateParticles(updatePosition.getX(), updatePosition.getY(), 0);
+            updatePosition.set((int) Methods.xRadius(direction, 4), (int) Methods.yRadius(direction, 4));
+            direction += 18 + ParticleSource.random.randomInRange(0, 4);
+            if (!isEmits() && Main.backgroundLoader.allLoaded()) {
+                setEmits(true);
+            }
+            if (lights.get(0).getSizeChange() <= 0.9f) {
+                lights.get(0).setSizeChange(lights.get(0).getSizeChange() + ParticleSource.random.randomInRange(10, 10) / 1000f);
+            } else if (lights.get(0).getSizeChange() >= 1f) {
+                lights.get(0).setSizeChange(lights.get(0).getSizeChange() - ParticleSource.random.randomInRange(10, 10) / 1000f);
+            } else {
+                lights.get(0).setSizeChange(lights.get(0).getSizeChange() + ParticleSource.random.randomInRange(-10, 10) / 1000f);
+            }
         }
     }
 
-
     @Override
     public void render() {
+        updateFire();
         particleSource.render(getX(), (int) (getY() - floatHeight));
     }
 

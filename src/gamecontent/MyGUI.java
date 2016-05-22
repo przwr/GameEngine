@@ -22,8 +22,6 @@ import sounds.Sound;
 import sprites.SpriteSheet;
 import sprites.vbo.VertexBufferObject;
 
-import java.util.ArrayList;
-
 /**
  * @author Wojtek
  */
@@ -196,19 +194,18 @@ public class MyGUI extends GUIObject {
                     break;
             }
 
-            if (true) {
+            if (player.isEquipmentOn()) {
                 Drawer.setColorStatic(0.4f, 0.4f, 0.4f, 0.8f);
                 Drawer.drawRectangle(0, 0, secondPartWidth, menuHeight);
-                drawEquipmentSlots(12, 3, 50);
+                drawSlots(12, 3, 50, null);
             }
-
-            if (true) {
+            if (player.isBackpackOn()) {
                 Drawer.setColorStatic(0.5f, 0.4f, 0.3f, 0.8f);
                 int space = 50;
-                int xSlots = 3;
-                int ySlots = 3;
-                int xBackpack = 6 + xSlots * 50;
-                int yBackpack = 4 + ySlots * 50;
+                int xSlots = player.getXBackpackSize();
+                int ySlots = player.getYBackpackSize();
+                int xBackpack = 6 + xSlots * space;
+                int yBackpack = 4 + ySlots * space;
                 switch (corner) {
                     case LEFT_TOP:
                         Drawer.regularShader.translateNoReset(secondPartWidth + 8, -secondPartHeight);
@@ -224,19 +221,22 @@ public class MyGUI extends GUIObject {
                         break;
                 }
                 Drawer.drawRectangle(0, 0, xBackpack, yBackpack);
-                drawEquipmentSlots(xSlots * ySlots, xSlots, space);
+                drawSlots(xSlots * ySlots, xSlots, space, player.getItems());
             }
         }
     }
 
-    private void drawEquipmentSlots(int all, int cols, int space) {
-        ArrayList<Item> items = player.getItems();
+    private void drawSlots(int all, int cols, int space, Item[] items) {
+        if (items != null && all != items.length) {
+            System.out.println("Wielkość plecaka/pojemnika nie zgadza się z ilością przedmiotów");
+        }
         Drawer.regularShader.translateNoReset(-4, -5);
         for (int i = 0; i < all; i++) {
-            if (items != null && items.size() > i) {
-                renderItemIcon(1);
-            } else {
-                renderItemIcon(0);
+            renderItemIcon(0);
+            if (items != null && items[i] != Item.EMPTY) {
+                Drawer.regularShader.translateNoReset(32, 32);
+                items[i].renderIcon();
+                Drawer.regularShader.translateNoReset(-32, -32);
             }
             renderIconRing();
             Drawer.regularShader.translateNoReset(space, 0);

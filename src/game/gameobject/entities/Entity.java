@@ -14,7 +14,6 @@ import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.activator.InteractiveActivator;
 import game.gameobject.interactive.activator.UpdateBasedActivator;
 import game.gameobject.interactive.collision.CircleInteractiveCollision;
-import game.gameobject.items.Item;
 import game.gameobject.stats.Stats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.gameobject.temporalmodifiers.TemporalChanger;
@@ -24,13 +23,13 @@ import game.place.Place;
 import net.jodk.lang.FastMath;
 import net.packets.Update;
 import org.newdawn.slick.Color;
+import sprites.Animation;
+import sprites.SpriteSheet;
 
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import sprites.Animation;
-import sprites.SpriteSheet;
 
 /**
  * @author przemek
@@ -41,8 +40,8 @@ public abstract class Entity extends GameObject {
     public static final Color JUMP_SHADOW_COLOR = new Color(0f, 0f, 0f, 1f);
     protected static final RandomGenerator random = RandomGenerator.create();
     public final Update[] updates = new Update[4];
-    protected Animation animation;
     public int lastAdded;
+    protected Animation animation;
     protected int direction;  //Obecny, bądź ostatni kierunek ruchu (stopnie)
     protected int direction8Way;  //Obecny, bądź ostatni kierunek ruchu (8 kierunków 0 - 7)
     protected double xSpeed, ySpeed;

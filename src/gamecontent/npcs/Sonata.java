@@ -82,6 +82,7 @@ public class Sonata extends Mob {
                 dialog = "3";
             }, "0");
             player.getTextController().addEventOnBranchEnd(() -> {
+                player.removeItem(money);
                 dialog = "3a2";
                 zuo.delete();
             }, "4");

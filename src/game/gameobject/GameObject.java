@@ -8,17 +8,16 @@ package game.gameobject;
 /**
  * @author przemek
  */
+
 import collision.Figure;
 import engine.lights.Light;
 import engine.utilities.Drawer;
 import engine.utilities.Methods;
 import game.gameobject.entities.Entity;
-import game.gameobject.entities.Player;
 import game.gameobject.items.Item;
 import game.place.Place;
 import game.place.map.Map;
 import game.place.map.WarpPoint;
-import gamecontent.MyController;
 import sprites.Appearance;
 
 import java.util.ArrayList;
@@ -45,7 +44,9 @@ public abstract class GameObject {
     protected double floatHeight;
     protected double gravity = 0.6;
     protected ArrayList<Light> lights;
-    protected ArrayList<Item> items;
+    protected Item[] items;
+    protected int xBackpackSize = 2;
+    protected int yBackpackSize = 3;
     protected int xEffect, yEffect;
 
     {
@@ -495,14 +496,77 @@ public abstract class GameObject {
         flags.set(CAN_INTERACT, canInteract);
     }
 
-    public void addItem(Item item) {
+    public boolean addItem(Item item) {
         if (items == null) {
-            items = new ArrayList<>();
+            items = new Item[xBackpackSize * yBackpackSize];
+            for (int i = 0; i < items.length; i++) {
+                items[i] = Item.EMPTY;
+            }
         }
-        items.add(item);
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] == Item.EMPTY) {
+                items[i] = item;
+                return true;
+            }
+        }
+        return false;
     }
 
-    public ArrayList<Item> getItems() {
+    public void removeItem(Item item) {
+        if (items != null) {
+            for (int i = 0; i < items.length; i++) {
+                if (items[i] == item) {
+                    items[i] = Item.EMPTY;
+                }
+            }
+        }
+    }
+
+
+    public ArrayList<Item> setBackpackSize(int xSize, int ySize) {
+        xBackpackSize = xSize;
+        yBackpackSize = ySize;
+        Item[] temp = new Item[xSize * ySize];
+        if (xSize * ySize != items.length) {
+            int j = 0;
+            for (int i = 0; i < temp.length; i++) {
+                while (j < items.length) {
+                    if (items[j] != Item.EMPTY) {
+                        temp[i] = items[j];
+                        j++;
+                        break;
+                    }
+                    j++;
+                }
+                if (j == items.length) {
+                    temp[i] = Item.EMPTY;
+                }
+            }
+            if (j < items.length) {
+                ArrayList<Item> left = new ArrayList<>(items.length - j);
+                for (; j < items.length; j++) {
+                    if (items[j] != Item.EMPTY) {
+                        left.add(items[j]);
+                    }
+                }
+                if (!left.isEmpty()) {
+                    return left;
+                }
+            }
+        }
+        items = temp;
+        return null;
+    }
+
+    public Item[] getItems() {
         return items;
+    }
+
+    public int getXBackpackSize() {
+        return xBackpackSize;
+    }
+
+    public int getYBackpackSize() {
+        return yBackpackSize;
     }
 }

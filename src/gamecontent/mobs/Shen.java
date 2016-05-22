@@ -232,14 +232,15 @@ public class Shen extends Mob {
             public void update() {
 //                System.out.println("WANDER");
                 if (rest.isOver()) {
-                    if (Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <= sightRange2 / 16) {
+                    if (seconds == 0 || destination.getX() < 0 || Methods.pointDistanceSimple2(getX(), getY(), destination.getX(), destination.getY()) <=
+                            sightRange2 / 16) {
                         destination.set(getRandomPointInDistance((int) (sightRange * 1.5), spawnPosition.getX(), spawnPosition.getY()));
 //                        System.out.println(destination);
                     }
                     seconds++;
                     if (seconds > max) {
                         seconds = 0;
-                        max = random.random(4);
+                        max = random.randomInRange(5, 10);
                     }
                     rest.start();
                 }
@@ -259,7 +260,6 @@ public class Shen extends Mob {
                     if (Methods.pointDistanceSimple2(getX(), getY(), x / closeFriends.size(), y / closeFriends.size()) < sightRange2 / 4) {
                         goTo(destination);
                     }
-
                 } else {
                     goTo(destination);
                 }

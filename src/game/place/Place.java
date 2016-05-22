@@ -93,7 +93,6 @@ public abstract class Place extends ScreenPlace {
                             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                             map.updateCamerasVariables(currentCamera);
                             manageFading(map);
-
                             renderCurrentCamera(map);
                             console.render();
                             glDisable(GL_SCISSOR_TEST);
