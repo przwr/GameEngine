@@ -29,6 +29,7 @@ public class MyGUI extends GUIObject {
 
 
     private final static int LEFT_TOP = 0, RIGHT_TOP = 1, LEFT_BOTTOM = 2, RIGHT_BOTTOM = 3;
+    private static final int QUICK = 0, GEAR = 1, EQUIP = 2;
     private SpriteSheet attackIcons, itemIcons;
     private int firstAttackType, secondAttackType;
     private float lifeAlpha;
@@ -36,6 +37,7 @@ public class MyGUI extends GUIObject {
     private float lastLife, lastEnergy, energyNeeded;
     private boolean riseLifeAlpha, on = true;
     private Color color = new Color(0, 0, 0);
+    private Color selected = new Color(0.2f, 0.7f, 0.3f);
     private Delay lifeDelay = Delay.createInSeconds(1),
             energyDelay = Delay.createInSeconds(1),
             energyLowDelay = Delay.createInMilliseconds(250);
@@ -45,6 +47,8 @@ public class MyGUI extends GUIObject {
     private int size, base, border, innerSize;
     private float scale;
     private Sound error;
+    private int navigation = 1, navX = 2, navY = 2;
+    private int eqX = 3, eqY = 4;
 
     public MyGUI(String name, Place place) {
         super(name, place);
@@ -139,7 +143,6 @@ public class MyGUI extends GUIObject {
                     }
                 }
                 corner = i;
-//                System.out.println(player.getName() + ": " + corner);
             }
             switch (corner) {
                 case LEFT_TOP:
@@ -193,11 +196,10 @@ public class MyGUI extends GUIObject {
                     Drawer.regularShader.translate(-2, -menuHeight - border + 1);
                     break;
             }
-
             if (player.isEquipmentOn()) {
                 Drawer.setColorStatic(0.4f, 0.4f, 0.4f, 0.8f);
                 Drawer.drawRectangle(0, 0, secondPartWidth, menuHeight);
-                drawSlots(12, 3, 50, null);
+                drawSlots(eqX * eqY, eqX, 50, null, navigation == GEAR);
             }
             if (player.isBackpackOn()) {
                 Drawer.setColorStatic(0.5f, 0.4f, 0.3f, 0.8f);
@@ -221,15 +223,16 @@ public class MyGUI extends GUIObject {
                         break;
                 }
                 Drawer.drawRectangle(0, 0, xBackpack, yBackpack);
-                drawSlots(xSlots * ySlots, xSlots, space, player.getItems());
+                drawSlots(xSlots * ySlots, xSlots, space, player.getItems(), navigation == EQUIP);
             }
         }
     }
 
-    private void drawSlots(int all, int cols, int space, Item[] items) {
+    private void drawSlots(int all, int cols, int space, Item[] items, boolean highLighted) {
         if (items != null && all != items.length) {
             System.out.println("Wielkość plecaka/pojemnika nie zgadza się z ilością przedmiotów");
         }
+        int sel = -1;
         Drawer.regularShader.translateNoReset(-4, -5);
         for (int i = 0; i < all; i++) {
             renderItemIcon(0);
@@ -238,33 +241,75 @@ public class MyGUI extends GUIObject {
                 items[i].renderIcon();
                 Drawer.regularShader.translateNoReset(-32, -32);
             }
-            renderIconRing();
+            if (highLighted && i == navX + navY * cols) {
+                sel = i;
+            } else {
+                renderIconRing(color);
+            }
             Drawer.regularShader.translateNoReset(space, 0);
             if ((i + 1) % cols == 0) {
                 Drawer.regularShader.translateNoReset(-space * cols, space);
             }
         }
-        Drawer.regularShader.translateNoReset(4, -195);
+        Drawer.regularShader.translateNoReset(4, -(all / cols) * space + 5);
+        if (sel != -1) {
+            Drawer.regularShader.translateNoReset(-4 + (sel % cols) * space, -5 + (sel / cols) * space);
+            renderIconRing(selected);
+            Drawer.regularShader.translateNoReset(4 - (sel % cols) * space, 5 - (sel / cols) * space);
+        }
     }
 
     private void renderIcons() {
         renderLifeEnergyRings();
+        int sel = 0;
+        boolean highlighted = player.usesHandyMenu() && navigation == QUICK;
 
         Drawer.regularShader.translate(size / 2 + border, 2 * border / 3);
         renderItemIcon(0);
-        renderIconRing();
+        if (highlighted && navX == 0 && navY == 0) {
+            sel = 0;
+        } else {
+            renderIconRing(color);
+        }
 
         Drawer.regularShader.translateNoReset(size / 2 + border / 3, size / 2 + border / 3);
         renderItemIcon(0);
-        renderIconRing();
+        if (highlighted && navX == 1 && navY == 0) {
+            sel = 1;
+        } else {
+            renderIconRing(color);
+        }
 
         Drawer.regularShader.translateNoReset(-size / 2 - border / 3, size / 2 + border / 3);
         renderItemIcon(1);
-        renderIconRing();
+        if (highlighted && navX == 1 && navY == 1) {
+            sel = 2;
+        } else {
+            renderIconRing(color);
+        }
 
         Drawer.regularShader.translateNoReset(-size / 2 - border / 3, -size / 2 - border / 3);
         renderItemIcon(0);
-        renderIconRing();
+        if (highlighted && navX == 0 && navY == 1) {
+            sel = 3;
+        } else {
+            renderIconRing(color);
+        }
+
+        if (highlighted) {
+            switch (sel) {
+                case 0:
+                    Drawer.regularShader.translate(size / 2 + border, 2 * border / 3);
+                    break;
+                case 1:
+                    Drawer.regularShader.translateNoReset(size + 2 * border / 3, 0);
+                    break;
+                case 2:
+                    Drawer.regularShader.translateNoReset(size / 2 + border / 3, size / 2 + border / 3);
+                    break;
+            }
+            renderIconRing(selected);
+        }
 
 
         switch (corner) {
@@ -283,11 +328,11 @@ public class MyGUI extends GUIObject {
         }
 
         renderAttackIcon(firstAttackType);
-        renderIconRing();
+        renderIconRing(color);
 
         Drawer.regularShader.translateNoReset(size + border, 0);
         renderAttackIcon(secondAttackType);
-        renderIconRing();
+        renderIconRing(color);
     }
 
     private void renderItemIcon(int icon) {
@@ -312,8 +357,7 @@ public class MyGUI extends GUIObject {
         }
     }
 
-    private void
-    renderIconRing() {
+    private void renderIconRing(Color color) {
         Drawer.setColorStatic(color);
         Drawer.regularShader.setUseTexture(false);
         rings.renderTriangleStrip(placement[0], placement[1]);
@@ -466,6 +510,38 @@ public class MyGUI extends GUIObject {
         energyNeeded = need;
         energyLowDelay.start();
         error.play();
+    }
+
+    public int getNavigation() {
+        return navigation;
+    }
+
+    public void setNavigation(int navigation) {
+        this.navigation = navigation;
+    }
+
+    public int getNavX() {
+        return navX;
+    }
+
+    public void setNavX(int navX) {
+        this.navX = navX;
+    }
+
+    public int getNavY() {
+        return navY;
+    }
+
+    public void setNavY(int navY) {
+        this.navY = navY;
+    }
+
+    public int getEqX() {
+        return eqX;
+    }
+
+    public int getEqY() {
+        return eqY;
     }
 
 }
