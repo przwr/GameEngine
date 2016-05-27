@@ -140,7 +140,7 @@ public class GUIHandler extends GUIObject {
         this.prettyOptions = new String[options.length * 2];
         for (int i = 0; i < options.length; i++) {
             this.prettyOptions[2 * i] = prettyOptions[i] + ": ";
-            this.prettyOptions[2 * i + 1] = options[i] ? "ON" : "OFF";
+            this.prettyOptions[2 * i + 1] = options[i] ? "USE" : "OFF";
         }
         visible = true;
     }
@@ -310,7 +310,7 @@ public class GUIHandler extends GUIObject {
         }
         if (key.keyPressed(Keyboard.KEY_RETURN)) {
             options[selected] = !options[selected];
-            prettyOptions[2 * selected + 1] = options[selected] ? "ON" : "OFF";
+            prettyOptions[2 * selected + 1] = options[selected] ? "USE" : "OFF";
             objPlace.setViewingOption(selected);
         }
         if (key.keyPressed(Keyboard.KEY_BACK)) {

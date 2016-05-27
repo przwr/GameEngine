@@ -371,17 +371,19 @@ public abstract class Mob extends Entity {
         }
     }
 
-    public void deathReaction(InteractiveResponse response) {
-        createCorpse(response);
+    public Corpse deathReaction(InteractiveResponse response) {
+        return createCorpse(response);
     }
 
-    public void createCorpse(InteractiveResponse response) {
+    public Corpse createCorpse(InteractiveResponse response) {
         if (animation != null) {
             double knockback = Stats.attackKnockbackPower(response.getKnockBack() * 1.5f, stats.getWeight());
             knockBack((int) knockback, knockback / 6, response.getAttacker());
             Corpse corpse = new Corpse(this, animation);
             map.addObject(corpse);
+            return corpse;
         }
+        return null;
     }
 
     @Override

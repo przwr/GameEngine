@@ -24,6 +24,8 @@ import game.gameobject.stats.MobStats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
+import gamecontent.environment.Corpse;
+import gamecontent.environment.MoneyBag;
 import net.jodk.lang.FastMath;
 
 /**
@@ -463,10 +465,14 @@ public class Shen extends Mob {
     }
 
     @Override
-    public void deathReaction(InteractiveResponse response) {
+    public Corpse deathReaction(InteractiveResponse response) {
         animation.setFPS(4);
         animation.animateIntervalInDirectionOnce(getDirection8Way(), 15, 16);
-        super.deathReaction(response);
+        Corpse corpse = super.deathReaction(response);
+        if (corpse != null) {
+            corpse.addItem(new MoneyBag(0, 0, place));
+        }
+        return corpse;
     }
 
 }

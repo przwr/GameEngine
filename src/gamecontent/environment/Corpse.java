@@ -66,14 +66,17 @@ public class Corpse extends Entity {
     public void interact(Entity entity) {
         if (entity instanceof Player) {
             Player player = (Player) entity;
-            player.getTextController().lockEntity(player);
-            player.getTextController().startFromText(new String[]{
-                "Proszę państwa, oto " + ownerName + ".$FL",
-                ownerName + " jest bardzo martwy dziś.$FL",
-                "Chętnie państwu łapę poda.$FL",
-                "Nie chce podać?$VE0.1$....$VE0.7$",
-                "A to szkoda."
-            });
+            player.setUsesHandyMenu(true);
+            player.setAbleToMove(false);
+//          TODO change Eq to
+//            player.getTextController().lockEntity(player);
+//            player.getTextController().startFromText(new String[]{
+//                "Proszę państwa, oto " + ownerName + ".$FL",
+//                ownerName + " jest bardzo martwy dziś.$FL",
+//                "Chętnie państwu łapę poda.$FL",
+//                "Nie chce podać?$VE0.1$....$VE0.7$",
+//                "A to szkoda."
+//            });
         }
     }
 
