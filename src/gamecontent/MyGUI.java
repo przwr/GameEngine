@@ -28,6 +28,7 @@ import sprites.vbo.VertexBufferObject;
 public class MyGUI extends GUIObject {
 
 
+    public final static int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, USE = 4;
     private final static int LEFT_TOP = 0, RIGHT_TOP = 1, LEFT_BOTTOM = 2, RIGHT_BOTTOM = 3;
     private static final int QUICK = 0, GEAR = 1, EQUIP = 2;
     private SpriteSheet attackIcons, itemIcons;
@@ -47,7 +48,7 @@ public class MyGUI extends GUIObject {
     private int size, base, border, innerSize;
     private float scale;
     private Sound error;
-    private int navigation = 1, navX = 2, navY = 2;
+    private int navigation = 0, navX = 0, navY = 0;
     private int eqX = 3, eqY = 4;
 
     public MyGUI(String name, Place place) {
@@ -130,6 +131,7 @@ public class MyGUI extends GUIObject {
 
     private void renderGUI() {
         if (player.isInGame()) {
+            updateHandyMenu();
             Color light = player.getMap().getLightColor();
             Camera cam = Place.currentCamera;
             color.r = color.g = color.b = (1f - Math.min(Math.min(light.r, light.g), light.b)) * 0.5f;
@@ -169,6 +171,268 @@ public class MyGUI extends GUIObject {
         }
     }
 
+    private void updateHandyMenu() {
+        switch (navigation) {
+            case QUICK:
+                moveFromQuick();
+                break;
+            case GEAR:
+                moveFromGear();
+                break;
+            case EQUIP:
+                moveFromEquip();
+                break;
+        }
+        player.setMenuKey(-1);
+    }
+
+    private void moveFromGear() {
+        switch (player.getMenuKey()) {
+            case UP:
+                if (navY == 0) {
+                    navigation = QUICK;
+                    navY = navX = 1;
+                } else {
+                    navY--;
+                }
+                break;
+            case DOWN:
+                if (navY == eqY - 1) {
+                    navigation = QUICK;
+                    navY = navX = 0;
+                } else {
+                    navY++;
+                }
+                break;
+            case LEFT:
+                if (navX == 0) {
+                    if (player.isEquipmentOn()) {
+                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
+                            if (navY < player.getYBackpackSize() - 2) {
+                                navigation = EQUIP;
+                                navY += 2;
+                                navX = player.getXBackpackSize() - 1;
+                            } else {
+                                navX = eqX - 1;
+                            }
+                        } else {
+                            if (navY > 5 - player.getYBackpackSize()) {
+                                navigation = EQUIP;
+                                navY = player.getYBackpackSize() - (6 - navY);
+                                navX = player.getXBackpackSize() - 1;
+                            } else {
+                                navX = eqX - 1;
+                            }
+                        }
+                    } else {
+                        navX = eqX - 1;
+                    }
+                } else {
+                    navX--;
+                }
+                break;
+            case RIGHT:
+                if (navX == eqX - 1) {
+                    if (player.isEquipmentOn()) {
+                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
+                            if (navY < player.getYBackpackSize() - 2) {
+                                navigation = EQUIP;
+                                navY += 2;
+                                navX = 0;
+                            } else {
+                                navX = 01;
+                            }
+                        } else {
+                            if (navY > 5 - player.getYBackpackSize()) {
+                                navigation = EQUIP;
+                                navY = player.getYBackpackSize() - (6 - navY);
+                                navX = 0;
+                            } else {
+                                navX = 0;
+                            }
+                        }
+                    } else {
+                        navX = 0;
+                    }
+                } else {
+                    navX++;
+                }
+                break;
+            case USE:
+                System.out.println("Use GEAR");
+                break;
+        }
+    }
+
+
+    private void moveFromEquip() {
+        switch (player.getMenuKey()) {
+            case UP:
+                if (navY == 0) {
+                    navY = player.getYBackpackSize() - 1;
+                } else {
+                    navY--;
+                }
+                break;
+            case DOWN:
+                if (navY == player.getYBackpackSize() - 1) {
+                    navY = 0;
+                } else {
+                    navY++;
+                }
+                break;
+            case LEFT:
+                if (navX == 0) {
+                    if (player.isEquipmentOn()) {
+                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
+                            if (navY < 2) {
+                                navigation = QUICK;
+                                navX = 1;
+                                navY = 0;
+                            } else if (navY >= 2 && navY <= eqY + 1) {
+                                navigation = GEAR;
+                                navY -= 2;
+                                navX = eqX - 1;
+                            } else {
+                                navX = player.getXBackpackSize() - 1;
+                            }
+                        } else {
+                            if (navY > player.getYBackpackSize() - 3) {
+                                navigation = QUICK;
+                                navX = 1;
+                                navY = 0;
+                            } else if (navY >= 0) {
+                                navigation = GEAR;
+                                navY = eqY - player.getYBackpackSize() + 2 - navY;
+                                navX = eqX - 1;
+                            } else {
+                                navX = player.getXBackpackSize() - 1;
+                            }
+                        }
+                    } else {
+                        navX = player.getXBackpackSize() - 1;
+                    }
+                } else {
+                    navX--;
+                }
+                break;
+            case RIGHT:
+                if (navX == player.getXBackpackSize() - 1) {
+                    if (player.isEquipmentOn()) {
+                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
+                            if (navY < 2) {
+                                navigation = QUICK;
+                                navX = 0;
+                                navY = 1;
+                            } else if (navY >= 2 && navY <= eqY + 1) {
+                                navigation = GEAR;
+                                navY -= 2;
+                                navX = 0;
+                            } else {
+                                navX = player.getXBackpackSize() - 1;
+                            }
+                        } else {
+                            if (navY > player.getYBackpackSize() - 3) {
+                                navigation = QUICK;
+                                navX = 0;
+                                navY = 1;
+                            } else if (navY >= 0) {
+                                navigation = GEAR;
+                                navY = eqY - player.getYBackpackSize() + 2 - navY;
+                                navX = 0;
+                            } else {
+                                navX = player.getXBackpackSize() - 1;
+                            }
+                        }
+                    } else {
+                        navX = 0;
+                    }
+                } else {
+                    navX++;
+                }
+                break;
+            case USE:
+                System.out.println("Use GEAR");
+                break;
+        }
+    }
+
+    private void moveFromQuick() {
+        switch (player.getMenuKey()) {
+            case UP:
+                if (navX == 0 && navY == 0) {
+                    if (player.isGearOn()) {
+                        navigation = GEAR;
+                        navX = 1;
+                        navY = eqY - 1;
+                    } else {
+                        navX = 1;
+                        navY = 1;
+                    }
+                } else {
+                    navX = 0;
+                    navY = 0;
+                }
+                break;
+            case DOWN:
+                if (navX == 1 && navY == 1) {
+                    if (player.isGearOn()) {
+                        navigation = GEAR;
+                        navX = 1;
+                        navY = 0;
+                    } else {
+                        navX = 0;
+                        navY = 0;
+                    }
+                } else {
+                    navX = 1;
+                    navY = 1;
+                }
+                break;
+            case LEFT:
+                if (navX == 0 && navY == 1) {
+                    if (player.isEquipmentOn()) {
+                        navigation = EQUIP;
+                        navX = player.getXBackpackSize() - 1;
+                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
+                            navY = 0;
+                        } else {
+                            navY = player.getYBackpackSize() - 1;
+                        }
+                    } else {
+                        navX = 1;
+                        navY = 0;
+                    }
+                } else {
+                    navX = 0;
+                    navY = 1;
+                }
+                break;
+            case RIGHT:
+                if (navX == 1 && navY == 0) {
+                    if (player.isEquipmentOn()) {
+                        navigation = EQUIP;
+                        navX = 0;
+                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
+                            navY = 0;
+                        } else {
+                            navY = player.getYBackpackSize() - 1;
+                        }
+                    } else {
+                        navX = 0;
+                        navY = 1;
+                    }
+                } else {
+                    navX = 1;
+                    navY = 0;
+                }
+                break;
+            case USE:
+                System.out.println("Use QUICK");
+                break;
+        }
+    }
+
     private void renderAllElements() {
         renderLife();
         renderEnergy();
@@ -196,12 +460,12 @@ public class MyGUI extends GUIObject {
                     Drawer.regularShader.translate(-2, -menuHeight - border + 1);
                     break;
             }
-            if (player.isEquipmentOn()) {
+            if (player.isGearOn()) {
                 Drawer.setColorStatic(0.4f, 0.4f, 0.4f, 0.8f);
                 Drawer.drawRectangle(0, 0, secondPartWidth, menuHeight);
                 drawSlots(eqX * eqY, eqX, 50, null, navigation == GEAR);
             }
-            if (player.isBackpackOn()) {
+            if (player.isEquipmentOn()) {
                 Drawer.setColorStatic(0.5f, 0.4f, 0.3f, 0.8f);
                 int space = 50;
                 int xSlots = player.getXBackpackSize();
@@ -298,13 +562,13 @@ public class MyGUI extends GUIObject {
 
         if (highlighted) {
             switch (sel) {
-                case 0:
+                case UP:
                     Drawer.regularShader.translate(size / 2 + border, 2 * border / 3);
                     break;
-                case 1:
+                case DOWN:
                     Drawer.regularShader.translateNoReset(size + 2 * border / 3, 0);
                     break;
-                case 2:
+                case LEFT:
                     Drawer.regularShader.translateNoReset(size / 2 + border / 3, size / 2 + border / 3);
                     break;
             }

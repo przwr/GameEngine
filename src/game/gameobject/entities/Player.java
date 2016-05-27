@@ -35,7 +35,8 @@ public abstract class Player extends Entity {
     protected Map empty;
     protected GameOnline online;
     private Menu menu;
-    private boolean usesHandyMenu, equipmentOn = true, backpackOn = true;
+    private boolean usesHandyMenu, gearOn = true, backpackOn = true;
+    private int menuKey = -1;
 
     protected Player(String name) {
         super();
@@ -221,19 +222,27 @@ public abstract class Player extends Entity {
         return usesHandyMenu;
     }
 
+    public boolean isGearOn() {
+        return gearOn;
+    }
+
+    public void setGearOn(boolean gearOn) {
+        this.gearOn = gearOn;
+    }
+
     public boolean isEquipmentOn() {
-        return equipmentOn;
-    }
-
-    public void setEquipmentOn(boolean equipmentOn) {
-        this.equipmentOn = equipmentOn;
-    }
-
-    public boolean isBackpackOn() {
         return backpackOn;
     }
 
     public void setBackpackOn(boolean backpackOn) {
         this.backpackOn = backpackOn;
+    }
+
+    public int getMenuKey() {
+        return menuKey;
+    }
+
+    public void setMenuKey(int menuKey) {
+        this.menuKey = menuKey;
     }
 }

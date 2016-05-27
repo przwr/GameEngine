@@ -190,6 +190,19 @@ public class MyController extends PlayerController {
                 inControl.setAbleToMove(false);
             }
         }
+        if (inControl.usesHandyMenu()) {
+            if (actions[INPUT_DOWN].isKeyClicked()) {
+                inControl.setMenuKey(MyGUI.DOWN);
+            } else if (actions[INPUT_UP].isKeyClicked()) {
+                inControl.setMenuKey(MyGUI.UP);
+            } else if (actions[INPUT_RIGHT].isKeyClicked()) {
+                inControl.setMenuKey(MyGUI.RIGHT);
+            } else if (actions[INPUT_LEFT].isKeyClicked()) {
+                inControl.setMenuKey(MyGUI.LEFT);
+            } else if (actions[INPUT_ACTION].isKeyClicked()) {
+                inControl.setMenuKey(MyGUI.USE);
+            }
+        }
     }
 
     private void updateBlock() {
