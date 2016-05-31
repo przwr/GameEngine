@@ -22,6 +22,7 @@ import game.gameobject.interactive.action.InteractiveActionArrow;
 import game.gameobject.interactive.activator.UpdateBasedActivator;
 import game.gameobject.interactive.collision.CurveInteractiveCollision;
 import game.gameobject.interactive.collision.LineInteractiveCollision;
+import game.gameobject.items.Item;
 import game.gameobject.items.Weapon;
 import game.gameobject.stats.PlayerStats;
 import game.place.Place;
@@ -166,7 +167,6 @@ public class MyPlayer extends Player {
             this.weapon.setWearing(true);
         } else {
             addItem(weapon);
-//            TODO add to backpack
         }
     }
 
@@ -534,5 +534,12 @@ public class MyPlayer extends Player {
 
     public MyGUI getGUI() {
         return gui;
+    }
+
+    public void setLoot(Item[] loot) {
+        this.loot = loot;
+        gui.setNavigation(MyGUI.EQUIP);
+        gui.setNavX(0);
+        gui.setNavY(0);
     }
 }

@@ -18,11 +18,14 @@ import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
 import game.gameobject.interactive.Interactive;
+import game.gameobject.interactive.InteractiveResponse;
 import game.gameobject.interactive.activator.UpdateBasedActivator;
 import game.gameobject.interactive.collision.LineInteractiveCollision;
 import game.gameobject.stats.MobStats;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
+import gamecontent.environment.Corpse;
+import gamecontent.environment.MoneyBag;
 import net.jodk.lang.FastMath;
 
 import java.util.List;
@@ -443,5 +446,14 @@ public class Tongub extends Mob {
             appearance.render();
 //            renderPathPoints();
         }
+    }
+
+    @Override
+    public Corpse deathReaction(InteractiveResponse response) {
+        Corpse corpse = super.deathReaction(response);
+        if (corpse != null) {
+            corpse.addItem(new MoneyBag(0, 0, place));
+        }
+        return corpse;
     }
 }

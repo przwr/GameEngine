@@ -9,6 +9,7 @@ import engine.utilities.Drawer;
 import game.gameobject.GUIObject;
 import game.gameobject.GameObject;
 import game.gameobject.inputs.PlayerController;
+import game.gameobject.items.Item;
 import game.gameobject.items.Weapon;
 import game.menu.Menu;
 import game.place.Place;
@@ -34,9 +35,10 @@ public abstract class Player extends Entity {
     protected Weapon activeWeapon;
     protected Map empty;
     protected GameOnline online;
-    private Menu menu;
-    private boolean usesHandyMenu, gearOn = true, backpackOn = true;
-    private int menuKey = -1;
+    protected Menu menu;
+    protected boolean usesHandyMenu, gearOn = true, backpackOn = true;
+    protected Item[] loot;
+    protected int menuKey = -1;
 
     protected Player(String name) {
         super();
@@ -231,7 +233,7 @@ public abstract class Player extends Entity {
     }
 
     public boolean isEquipmentOn() {
-        return backpackOn;
+        return backpackOn || loot != null;
     }
 
     public void setBackpackOn(boolean backpackOn) {
@@ -244,5 +246,32 @@ public abstract class Player extends Entity {
 
     public void setMenuKey(int menuKey) {
         this.menuKey = menuKey;
+    }
+
+    public void turnOffLoot() {
+        this.loot = null;
+    }
+
+    @Override
+    public int getXBackpackSize() {
+        return loot != null ? loot.length / 3 : xBackpackSize;
+    }
+
+    @Override
+    public int getYBackpackSize() {
+        return loot != null ? 3 : yBackpackSize;
+    }
+
+    @Override
+    public Item[] getItems() {
+        return loot != null ? loot : items;
+    }
+
+    public boolean isLoot() {
+        return loot != null;
+    }
+
+    public void setLoot(Item[] loot) {
+        this.loot = loot;
     }
 }

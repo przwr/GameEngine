@@ -13,6 +13,7 @@ import game.Settings;
 import game.gameobject.GameObject;
 import game.gameobject.entities.*;
 import game.gameobject.interactive.Interactive;
+import game.gameobject.interactive.InteractiveResponse;
 import game.gameobject.interactive.activator.UpdateBasedActivator;
 import game.gameobject.interactive.collision.CurveInteractiveCollision;
 import game.gameobject.interactive.collision.LineInteractiveCollision;
@@ -20,6 +21,8 @@ import game.gameobject.stats.MobStats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.logic.navmeshpathfinding.PathFindingModule;
 import game.place.Place;
+import gamecontent.environment.Corpse;
+import gamecontent.environment.MoneyBag;
 import sounds.Sound3D;
 
 import java.util.Comparator;
@@ -982,6 +985,16 @@ public class Blazag extends Mob {
             appearance.render();
 //            renderPathPoints();
         }
+    }
+
+    @Override
+    public Corpse deathReaction(InteractiveResponse response) {
+        Corpse corpse = super.deathReaction(response);
+        if (corpse != null) {
+            corpse.addItem(new MoneyBag(0, 0, place));
+            corpse.addItem(new MoneyBag(0, 0, place));
+        }
+        return corpse;
     }
 
     private class Order {

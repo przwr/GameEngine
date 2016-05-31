@@ -29,8 +29,8 @@ public class MyGUI extends GUIObject {
 
 
     public final static int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, USE = 4;
+    public static final int QUICK = 0, GEAR = 1, EQUIP = 2;
     private final static int LEFT_TOP = 0, RIGHT_TOP = 1, LEFT_BOTTOM = 2, RIGHT_BOTTOM = 3;
-    private static final int QUICK = 0, GEAR = 1, EQUIP = 2;
     private SpriteSheet attackIcons, itemIcons;
     private int firstAttackType, secondAttackType;
     private float lifeAlpha;
@@ -352,7 +352,17 @@ public class MyGUI extends GUIObject {
                 }
                 break;
             case USE:
-                System.out.println("Use GEAR");
+                int i = navX + navY * player.getXBackpackSize();
+                Item item = player.getItems()[i];
+                if (item != Item.EMPTY) {
+                    if (player.isLoot()) {
+                        if (player.addItem(item)) {
+                            player.getItems()[i] = Item.EMPTY;
+                        }
+                    } else {
+                        System.out.println("To jest " + item.getName());
+                    }
+                }
                 break;
         }
     }
@@ -461,12 +471,16 @@ public class MyGUI extends GUIObject {
                     break;
             }
             if (player.isGearOn()) {
-                Drawer.setColorStatic(0.4f, 0.4f, 0.4f, 0.8f);
+                Drawer.setColorStatic(0.4f, 0.4f, 0.4f, 0.9f);
                 Drawer.drawRectangle(0, 0, secondPartWidth, menuHeight);
                 drawSlots(eqX * eqY, eqX, 50, null, navigation == GEAR);
             }
             if (player.isEquipmentOn()) {
-                Drawer.setColorStatic(0.5f, 0.4f, 0.3f, 0.8f);
+                if (player.isLoot()) {
+                    Drawer.setColorStatic(0.8f, 0.7f, 0.3f, 0.9f);
+                } else {
+                    Drawer.setColorStatic(0.5f, 0.4f, 0.3f, 0.9f);
+                }
                 int space = 50;
                 int xSlots = player.getXBackpackSize();
                 int ySlots = player.getYBackpackSize();

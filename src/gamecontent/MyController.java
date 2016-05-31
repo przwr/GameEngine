@@ -185,9 +185,13 @@ public class MyController extends PlayerController {
             if (inControl.usesHandyMenu()) {
                 inControl.setUsesHandyMenu(false);
                 inControl.setAbleToMove(true);
+                inControl.turnOffLoot();
             } else {
                 inControl.setUsesHandyMenu(true);
                 inControl.setAbleToMove(false);
+                inControl.setBackpackOn(true);
+                inControl.setGearOn(true);
+                inControl.turnOffLoot();
             }
         }
         if (inControl.usesHandyMenu()) {

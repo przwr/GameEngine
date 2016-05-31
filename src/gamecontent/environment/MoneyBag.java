@@ -37,8 +37,9 @@ public class MoneyBag extends Item {
                     "Aria włożyła $cfFF0000$sakiewkę z pieniędzmi$CN do kieszeni."
             });
             text.addEventOnBranchEnd(() -> {
-                this.delete();
-                player.addItem(this);
+                if (player.addItem(this)) {
+                    this.delete();
+                }
             }, "0");
         }
     }

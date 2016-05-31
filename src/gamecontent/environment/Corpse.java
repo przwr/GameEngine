@@ -7,18 +7,18 @@ package gamecontent.environment;
 
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Player;
+import game.gameobject.items.Item;
 import game.place.map.Area;
 import net.packets.Update;
 import sprites.Animation;
 
 /**
- *
  * @author Wojtek
  */
 public class Corpse extends Entity {
 
     private String ownerName;
-    
+
     public Corpse(Entity owner, Animation animation, int index) {
         this(owner, animation);
         animation.animateSingle(index);
@@ -65,10 +65,13 @@ public class Corpse extends Entity {
     @Override
     public void interact(Entity entity) {
         if (entity instanceof Player) {
-            Player player = (Player) entity;
-            player.setUsesHandyMenu(true);
-            player.setAbleToMove(false);
-//          TODO change Eq to
+            if (anyItem()) {
+                Player player = (Player) entity;
+                player.setUsesHandyMenu(true);
+                player.setAbleToMove(false);
+                player.setBackpackOn(false);
+                player.setLoot(items);
+            }
 //            player.getTextController().lockEntity(player);
 //            player.getTextController().startFromText(new String[]{
 //                "Proszę państwa, oto " + ownerName + ".$FL",
@@ -78,6 +81,18 @@ public class Corpse extends Entity {
 //                "A to szkoda."
 //            });
         }
+    }
+
+    private boolean anyItem() {
+        if (items == null) {
+            return false;
+        }
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] != Item.EMPTY) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
