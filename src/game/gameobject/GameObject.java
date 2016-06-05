@@ -509,6 +509,7 @@ public abstract class GameObject {
                 return true;
             }
         }
+        System.out.println("Brak miejsca, by to wziąć!");
         return false;
     }
 

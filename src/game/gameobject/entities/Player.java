@@ -274,4 +274,10 @@ public abstract class Player extends Entity {
     public void setLoot(Item[] loot) {
         this.loot = loot;
     }
+
+    public Item getActiveWeapon() {
+        if (activeWeapon != null)
+            return activeWeapon;
+        return Item.EMPTY;
+    }
 }

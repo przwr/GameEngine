@@ -50,6 +50,7 @@ import static gamecontent.MyController.*;
  */
 public class MyPlayer extends Player {
 
+    private static final int FIRST_WEAPON = 3, SECOND_WEAPON = 5;
     private final String characterName = "aria";
     private Cloth head = Cloth.nullCloth;
     private Cloth torso = Cloth.nullCloth;
@@ -63,10 +64,9 @@ public class MyPlayer extends Player {
     private Cloth pants = Cloth.nullCloth;
     private Cloth boots = Cloth.nullCloth;
     private Cloth weapon = Cloth.nullCloth;
-    private Weapon firstWeapon;
-    private Weapon secondWeapon;
+    private Item[] gear = new Item[12];
     private Weapon lastWeapon;
-    private Weapon universal = new Weapon(0, 0, "Bare Hands", place, 0, null, UNIVERSAL);
+    private Weapon bareHands = new Weapon(0, 0, "Bare Hands", place, 0, null, UNIVERSAL);
     private ArrayList<InteractionSet> actionSets = new ArrayList<>();
     private int activeActionSet;
     private Point centralPoint;
@@ -84,6 +84,9 @@ public class MyPlayer extends Player {
     }
 
     private void initializeAttacks() {
+        for (int i = 0; i < gear.length; i++) {
+            gear[i] = Item.EMPTY;
+        }
         actionSets.add(new InteractionSet(UNIVERSAL));
         actionSets.add(new InteractionSet(SWORD));
         actionSets.add(new InteractionSet(BOW));
@@ -91,12 +94,12 @@ public class MyPlayer extends Player {
             Weapon sword = new Weapon(0, 0, "Sword", place, 2, null, SWORD);
             this.weapon.setWearing(true);
             sword.setModifier(1.2f);
-            firstWeapon = sword;
+            gear[FIRST_WEAPON] = sword;
             Weapon bow = new Weapon(0, 0, "Bow", place, 2, null, BOW);
             bow.setModifier(5f);
-            secondWeapon = bow;
+            gear[SECOND_WEAPON] = bow;
         }
-        activeWeapon = universal;
+        activeWeapon = bareHands;
 
         // TODO Interactives powinny być raz stworzone w Skillach!
         boolean done = false;
@@ -160,22 +163,23 @@ public class MyPlayer extends Player {
     }
 
     public void addWeapon(Weapon weapon) {
-        if (firstWeapon == null) {
-            firstWeapon = weapon;
-        } else if (secondWeapon == null) {
-            secondWeapon = weapon;
+        if (gear[FIRST_WEAPON] == Item.EMPTY) {
+            gear[FIRST_WEAPON] = weapon;
+            this.weapon.setWearing(true);
+        } else if (gear[SECOND_WEAPON] == Item.EMPTY) {
+            gear[SECOND_WEAPON] = weapon;
             this.weapon.setWearing(true);
         } else {
             addItem(weapon);
         }
     }
 
-    public Weapon getFirstWeapon() {
-        return firstWeapon;
+    public Item getFirstWeapon() {
+        return gear[FIRST_WEAPON];
     }
 
-    public Weapon getSecondWeapon() {
-        return secondWeapon;
+    public Item getSecondWeapon() {
+        return gear[SECOND_WEAPON];
     }
 
     public byte getFirstAttackType() {
@@ -205,31 +209,31 @@ public class MyPlayer extends Player {
     }
 
     public boolean changeWeapon() {
-        if (activeWeapon == universal) {
-            if (lastWeapon != null && lastWeapon != universal) {
+        if (activeWeapon == bareHands) {
+            if (lastWeapon != null && lastWeapon != bareHands) {
                 activeWeapon = lastWeapon;
-            } else if (firstWeapon != null) {
-                activeWeapon = firstWeapon;
-            } else if (secondWeapon != null) {
-                activeWeapon = secondWeapon;
+            } else if (gear[FIRST_WEAPON] != Item.EMPTY) {
+                activeWeapon = (Weapon) gear[FIRST_WEAPON];
+            } else if (gear[SECOND_WEAPON] != Item.EMPTY) {
+                activeWeapon = (Weapon) gear[SECOND_WEAPON];
             }
         } else {
-            if (activeWeapon == firstWeapon && secondWeapon != null) {
-                activeWeapon = secondWeapon;
-            } else if (activeWeapon == secondWeapon && firstWeapon != null) {
-                activeWeapon = firstWeapon;
+            if (activeWeapon == gear[FIRST_WEAPON] && gear[SECOND_WEAPON] != Item.EMPTY) {
+                activeWeapon = (Weapon) gear[SECOND_WEAPON];
+            } else if (activeWeapon == gear[SECOND_WEAPON] && gear[FIRST_WEAPON] != Item.EMPTY) {
+                activeWeapon = (Weapon) gear[FIRST_WEAPON];
             } else if (activeWeapon == null) {
-                activeWeapon = universal;
+                activeWeapon = bareHands;
             }
         }
         return updateActionSets();
     }
 
     public boolean hideWeapon() {
-        if (activeWeapon != universal) {
+        if (activeWeapon != bareHands) {
             lastWeapon = activeWeapon;
         }
-        activeWeapon = universal;
+        activeWeapon = bareHands;
         return updateActionSets();
     }
 
@@ -530,6 +534,10 @@ public class MyPlayer extends Player {
         if (appearance != null) {
             Drawer.drawShapePartBlack(appearance, collision.getDarkValue(), getX(), getY() - (int) floatHeight, xStart, xEnd);
         }
+    }
+
+    public Item[] getGear() {
+        return gear;
     }
 
     public MyGUI getGUI() {

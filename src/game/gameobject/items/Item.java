@@ -1,6 +1,5 @@
 package game.gameobject.items;
 
-import engine.utilities.Drawer;
 import game.gameobject.GameObject;
 import game.place.Place;
 
@@ -28,9 +27,7 @@ public class Item extends GameObject {
 
     public void renderIcon() {
         if (appearance != null) {
-            Drawer.regularShader.translateNoReset(0, 7);
             appearance.render();
-            Drawer.regularShader.translateNoReset(0, -7);
         }
     }
 

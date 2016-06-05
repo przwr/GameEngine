@@ -1,6 +1,8 @@
 package game.gameobject.items;
 
+import engine.utilities.Drawer;
 import game.place.Place;
+import org.newdawn.slick.Color;
 
 /**
  * Created by przemek on 02.09.15.
@@ -23,6 +25,12 @@ public class Weapon extends Item {
         return type;
     }
 
+    @Override
+    public void renderIcon() {
+        Drawer.setColorStatic(Color.gray);
+        Drawer.drawRectangle(-1, -10, 2, 20);
+        Drawer.refreshColor();
+    }
 
     public float getModifier() {
         return modifier;

@@ -39,12 +39,13 @@ public class MyGUI extends GUIObject {
     private boolean riseLifeAlpha, on = true;
     private Color color = new Color(0, 0, 0);
     private Color selected = new Color(0.2f, 0.7f, 0.3f);
+    private Color active = new Color(0.3f, 0.3f, 0.2f);
     private Delay lifeDelay = Delay.createInSeconds(1),
             energyDelay = Delay.createInSeconds(1),
             energyLowDelay = Delay.createInMilliseconds(250);
     private VertexBufferObject arrows, rings;
     private int[] placement = new int[2 * 3];
-    private int corner = LEFT_TOP;
+    private int corner = LEFT_TOP, activeWeapon = -1;
     private int size, base, border, innerSize;
     private float scale;
     private Sound error;
@@ -473,8 +474,15 @@ public class MyGUI extends GUIObject {
             if (player.isGearOn()) {
                 Drawer.setColorStatic(0.4f, 0.4f, 0.4f, 0.9f);
                 Drawer.drawRectangle(0, 0, secondPartWidth, menuHeight);
-                drawSlots(eqX * eqY, eqX, 50, null, navigation == GEAR);
+                Item[] gear = ((MyPlayer) player).getGear();
+                if (gear[3] == player.getActiveWeapon()) {
+                    activeWeapon = 3;
+                } else if (gear[5] == player.getActiveWeapon()) {
+                    activeWeapon = 5;
+                }
+                drawSlots(eqX * eqY, eqX, 50, gear, navigation == GEAR);
             }
+            activeWeapon = -1;
             if (player.isEquipmentOn()) {
                 if (player.isLoot()) {
                     Drawer.setColorStatic(0.8f, 0.7f, 0.3f, 0.9f);
@@ -513,7 +521,8 @@ public class MyGUI extends GUIObject {
         int sel = -1;
         Drawer.regularShader.translateNoReset(-4, -5);
         for (int i = 0; i < all; i++) {
-            renderItemIcon(0);
+            active = new Color(0.9f, 1f, 0.7f);
+            renderItemIcon(0, (i == activeWeapon) ? active : Color.white);
             if (items != null && items[i] != Item.EMPTY) {
                 Drawer.regularShader.translateNoReset(32, 32);
                 items[i].renderIcon();
@@ -543,7 +552,7 @@ public class MyGUI extends GUIObject {
         boolean highlighted = player.usesHandyMenu() && navigation == QUICK;
 
         Drawer.regularShader.translate(size / 2 + border, 2 * border / 3);
-        renderItemIcon(0);
+        renderItemIcon(0, Color.white);
         if (highlighted && navX == 0 && navY == 0) {
             sel = 0;
         } else {
@@ -551,7 +560,7 @@ public class MyGUI extends GUIObject {
         }
 
         Drawer.regularShader.translateNoReset(size / 2 + border / 3, size / 2 + border / 3);
-        renderItemIcon(0);
+        renderItemIcon(0, Color.white);
         if (highlighted && navX == 1 && navY == 0) {
             sel = 1;
         } else {
@@ -559,7 +568,7 @@ public class MyGUI extends GUIObject {
         }
 
         Drawer.regularShader.translateNoReset(-size / 2 - border / 3, size / 2 + border / 3);
-        renderItemIcon(1);
+        renderItemIcon(1, Color.white);
         if (highlighted && navX == 1 && navY == 1) {
             sel = 2;
         } else {
@@ -567,7 +576,7 @@ public class MyGUI extends GUIObject {
         }
 
         Drawer.regularShader.translateNoReset(-size / 2 - border / 3, -size / 2 - border / 3);
-        renderItemIcon(0);
+        renderItemIcon(0, Color.white);
         if (highlighted && navX == 0 && navY == 1) {
             sel = 3;
         } else {
@@ -613,8 +622,8 @@ public class MyGUI extends GUIObject {
         renderIconRing(color);
     }
 
-    private void renderItemIcon(int icon) {
-        Drawer.setColorStatic(Color.white);
+    private void renderItemIcon(int icon, Color color) {
+        Drawer.setColorStatic(color);
         if (scale != 1f) {
             Drawer.regularShader.scaleNoReset(scale, scale);
         }

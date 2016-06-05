@@ -14,6 +14,7 @@ import game.Settings;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
+import game.gameobject.items.Item;
 import game.gameobject.items.Weapon;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
@@ -88,7 +89,7 @@ public class Melodia extends Mob {
             player.getTextController().lockEntity(player);
             player.getTextController().startFromFile("npcdemo", dialog);
             player.getTextController().addEventOnBranchEnd(() -> {
-                if (player.getFirstWeapon() == null) {
+                if (player.getFirstWeapon() == Item.EMPTY) {
                     Weapon sword = new Weapon(0, 0, "Sword", place, 2, null, SWORD);
                     sword.setModifier(1.2f);
                     player.addWeapon(sword);

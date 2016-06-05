@@ -44,6 +44,14 @@ public class MoneyBag extends Item {
         }
     }
 
+    @Override
+    public void renderIcon() {
+        if (appearance != null) {
+            Drawer.regularShader.translateNoReset(0, 7);
+            appearance.render();
+            Drawer.regularShader.translateNoReset(0, -7);
+        }
+    }
 
     @Override
     public void update() {
