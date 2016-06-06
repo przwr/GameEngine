@@ -103,5 +103,8 @@ public class LangPL extends Language {
         menu.FramesLimit = "Limit klatek: ";
         menu.FramesAdjustment = "Automatyczne dostosowanie klatek: ";
         menu.Sound = "Dźwięk";
+
+        gui.Equipment = "Ekwipunek ";
+        gui.Outfit = "Wyposażenie";
     }
 }

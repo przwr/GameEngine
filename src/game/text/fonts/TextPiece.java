@@ -38,7 +38,11 @@ public class TextPiece {
 
 
     public void setLineMaxSize(int maxLineLength) {
-        this.lineMaxSize = maxLineLength / (float) Display.getWidth();
+        float newSize = maxLineLength / (float) Display.getWidth();
+        if (this.lineMaxSize != newSize) {
+            this.lineMaxSize = newSize;
+            TextMaster.loadText(this);
+        }
     }
 
     public void destroy() {

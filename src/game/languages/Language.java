@@ -11,6 +11,7 @@ package game.languages;
 public class Language {
 
     public final Menu menu = new Menu();
+    public final GUI gui = new GUI();
     public String lang;
 
     //Menu && Errors
@@ -78,5 +79,10 @@ public class Language {
         public String FramesLimit;
         public String FramesAdjustment;
         public String Sound;
+    }
+
+    public class GUI {
+        public String Equipment;
+        public String Outfit;
     }
 }

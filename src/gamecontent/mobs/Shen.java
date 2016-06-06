@@ -20,6 +20,7 @@ import game.gameobject.interactive.Interactive;
 import game.gameobject.interactive.InteractiveResponse;
 import game.gameobject.interactive.activator.UpdateBasedActivator;
 import game.gameobject.interactive.collision.CircleInteractiveCollision;
+import game.gameobject.items.Weapon;
 import game.gameobject.stats.MobStats;
 import game.gameobject.temporalmodifiers.SpeedChanger;
 import game.logic.navmeshpathfinding.PathFindingModule;
@@ -27,6 +28,8 @@ import game.place.Place;
 import gamecontent.environment.Corpse;
 import gamecontent.environment.MoneyBag;
 import net.jodk.lang.FastMath;
+
+import static game.gameobject.items.Weapon.SWORD;
 
 /**
  * @author przemek
@@ -471,6 +474,9 @@ public class Shen extends Mob {
         Corpse corpse = super.deathReaction(response);
         if (corpse != null) {
             corpse.addItem(new MoneyBag(0, 0, place));
+            Weapon broken_sword = new Weapon(0, 0, "Broken Sword", place, 2, null, SWORD);
+            broken_sword.setModifier(1.2f);
+            corpse.addItem(broken_sword);
         }
         return corpse;
     }

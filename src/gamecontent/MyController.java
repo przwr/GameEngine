@@ -188,6 +188,7 @@ public class MyController extends PlayerController {
                 inControl.turnOffLoot();
             } else {
                 inControl.setUsesHandyMenu(true);
+                ((MyPlayer) inControl).getGUI().resetHelpDelay();
                 inControl.setAbleToMove(false);
                 inControl.setBackpackOn(true);
                 inControl.setGearOn(true);

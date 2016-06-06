@@ -74,6 +74,10 @@ public abstract class ShaderProgram {
         }
     }
 
+    public static Matrix4f getTransformationMatrix() {
+        return transformationMatrix;
+    }
+
     public void rememberDefaultMatrix() {
         copyMatrix.load(defaultMatrix);
     }

@@ -21,7 +21,7 @@ import game.text.effects.TextController;
 public class MoneyBag extends Item {
 
     public MoneyBag(int x, int y, Place place) {
-        super(x, y, "moneyBag", place, 1, "money", place.getNextItemID());
+        super(x, y, "Money Bag", place, 1, "money", place.getNextItemID());
         setCollision(Rectangle.create(appearance.getActualWidth() / 2, appearance.getActualWidth() / 2, OpticProperties.NO_SHADOW, this));
         setSolid(false);
         setHasStaticShadow(true);

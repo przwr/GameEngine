@@ -70,7 +70,7 @@ public class Corpse extends Entity {
                 player.setUsesHandyMenu(true);
                 player.setAbleToMove(false);
                 player.setBackpackOn(false);
-                player.setLoot(items);
+                player.setLoot(items, name);
             }
 //            player.getTextController().lockEntity(player);
 //            player.getTextController().startFromText(new String[]{

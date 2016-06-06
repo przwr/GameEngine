@@ -39,6 +39,7 @@ public abstract class Player extends Entity {
     protected boolean usesHandyMenu, gearOn = true, backpackOn = true;
     protected Item[] loot;
     protected int menuKey = -1;
+    protected String lootName;
 
     protected Player(String name) {
         super();
@@ -271,13 +272,18 @@ public abstract class Player extends Entity {
         return loot != null;
     }
 
-    public void setLoot(Item[] loot) {
+    public void setLoot(Item[] loot, String lootName) {
         this.loot = loot;
+        this.lootName = lootName;
     }
 
     public Item getActiveWeapon() {
         if (activeWeapon != null)
             return activeWeapon;
         return Item.EMPTY;
+    }
+
+    public String getLootName() {
+        return lootName;
     }
 }

@@ -85,6 +85,7 @@ public class LangENG extends Language {
         menu.Actions[26] = "Item - Right";
         menu.Actions[27] = "Item - Down";
         menu.Actions[28] = "Item - Left";
+
         menu.PushButton = "Push the button!";
         menu.Unchangeable = "unchangeable!";
         menu.VSync = "Vertical synchronization: ";
@@ -102,5 +103,8 @@ public class LangENG extends Language {
         menu.FramesLimit = "Frames limit: ";
         menu.FramesAdjustment = "Auto frames adjustment: ";
         menu.Sound = "Sound";
+
+        gui.Equipment = "Equipment";
+        gui.Outfit = "Outfit";
     }
 }

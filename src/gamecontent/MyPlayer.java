@@ -182,6 +182,17 @@ public class MyPlayer extends Player {
         return gear[SECOND_WEAPON];
     }
 
+    public void putBackWeapon(Item weapon) {
+        if (gear[FIRST_WEAPON] == weapon) {
+            gear[FIRST_WEAPON] = Item.EMPTY;
+        } else if (gear[SECOND_WEAPON] == weapon) {
+            gear[SECOND_WEAPON] = Item.EMPTY;
+        }
+        if (activeWeapon == weapon) {
+            activeWeapon = bareHands;
+        }
+    }
+
     public byte getFirstAttackType() {
         Interactive attack = actionSets.get(activeActionSet).getFirstInteractive();
         if (attack != null) {

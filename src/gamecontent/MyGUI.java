@@ -13,13 +13,17 @@ import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.entities.Player;
 import game.gameobject.items.Item;
+import game.gameobject.items.Weapon;
 import game.gameobject.stats.PlayerStats;
 import game.place.Place;
 import game.place.cameras.Camera;
+import game.text.fonts.TextMaster;
+import game.text.fonts.TextPiece;
 import net.jodk.lang.FastMath;
 import org.newdawn.slick.Color;
 import sounds.Sound;
 import sprites.SpriteSheet;
+import sprites.shaders.ShaderProgram;
 import sprites.vbo.VertexBufferObject;
 
 /**
@@ -42,7 +46,8 @@ public class MyGUI extends GUIObject {
     private Color active = new Color(0.3f, 0.3f, 0.2f);
     private Delay lifeDelay = Delay.createInSeconds(1),
             energyDelay = Delay.createInSeconds(1),
-            energyLowDelay = Delay.createInMilliseconds(250);
+            energyLowDelay = Delay.createInMilliseconds(250),
+            helpDelay = Delay.createInMilliseconds(750);
     private VertexBufferObject arrows, rings;
     private int[] placement = new int[2 * 3];
     private int corner = LEFT_TOP, activeWeapon = -1;
@@ -51,6 +56,9 @@ public class MyGUI extends GUIObject {
     private Sound error;
     private int navigation = 0, navX = 0, navY = 0;
     private int eqX = 3, eqY = 4;
+    private TextPiece info = new TextPiece("", (int) (12 * (0.75 / Settings.nativeScale)), TextMaster.getFont("Lato-Regular"), 64, true);
+    private TextPiece gearTitle = new TextPiece("", (int) (12 * (0.75 / Settings.nativeScale)), TextMaster.getFont("Lato-Regular"), 64, true);
+    private TextPiece equipTitle = new TextPiece("", (int) (12 * (0.75 / Settings.nativeScale)), TextMaster.getFont("Lato-Regular"), 64, true);
 
     public MyGUI(String name, Place place) {
         super(name, place);
@@ -172,277 +180,6 @@ public class MyGUI extends GUIObject {
         }
     }
 
-    private void updateHandyMenu() {
-        switch (navigation) {
-            case QUICK:
-                moveFromQuick();
-                break;
-            case GEAR:
-                moveFromGear();
-                break;
-            case EQUIP:
-                moveFromEquip();
-                break;
-        }
-        player.setMenuKey(-1);
-    }
-
-    private void moveFromGear() {
-        switch (player.getMenuKey()) {
-            case UP:
-                if (navY == 0) {
-                    navigation = QUICK;
-                    navY = navX = 1;
-                } else {
-                    navY--;
-                }
-                break;
-            case DOWN:
-                if (navY == eqY - 1) {
-                    navigation = QUICK;
-                    navY = navX = 0;
-                } else {
-                    navY++;
-                }
-                break;
-            case LEFT:
-                if (navX == 0) {
-                    if (player.isEquipmentOn()) {
-                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
-                            if (navY < player.getYBackpackSize() - 2) {
-                                navigation = EQUIP;
-                                navY += 2;
-                                navX = player.getXBackpackSize() - 1;
-                            } else {
-                                navX = eqX - 1;
-                            }
-                        } else {
-                            if (navY > 5 - player.getYBackpackSize()) {
-                                navigation = EQUIP;
-                                navY = player.getYBackpackSize() - (6 - navY);
-                                navX = player.getXBackpackSize() - 1;
-                            } else {
-                                navX = eqX - 1;
-                            }
-                        }
-                    } else {
-                        navX = eqX - 1;
-                    }
-                } else {
-                    navX--;
-                }
-                break;
-            case RIGHT:
-                if (navX == eqX - 1) {
-                    if (player.isEquipmentOn()) {
-                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
-                            if (navY < player.getYBackpackSize() - 2) {
-                                navigation = EQUIP;
-                                navY += 2;
-                                navX = 0;
-                            } else {
-                                navX = 01;
-                            }
-                        } else {
-                            if (navY > 5 - player.getYBackpackSize()) {
-                                navigation = EQUIP;
-                                navY = player.getYBackpackSize() - (6 - navY);
-                                navX = 0;
-                            } else {
-                                navX = 0;
-                            }
-                        }
-                    } else {
-                        navX = 0;
-                    }
-                } else {
-                    navX++;
-                }
-                break;
-            case USE:
-                System.out.println("Use GEAR");
-                break;
-        }
-    }
-
-
-    private void moveFromEquip() {
-        switch (player.getMenuKey()) {
-            case UP:
-                if (navY == 0) {
-                    navY = player.getYBackpackSize() - 1;
-                } else {
-                    navY--;
-                }
-                break;
-            case DOWN:
-                if (navY == player.getYBackpackSize() - 1) {
-                    navY = 0;
-                } else {
-                    navY++;
-                }
-                break;
-            case LEFT:
-                if (navX == 0) {
-                    if (player.isEquipmentOn()) {
-                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
-                            if (navY < 2) {
-                                navigation = QUICK;
-                                navX = 1;
-                                navY = 0;
-                            } else if (navY >= 2 && navY <= eqY + 1) {
-                                navigation = GEAR;
-                                navY -= 2;
-                                navX = eqX - 1;
-                            } else {
-                                navX = player.getXBackpackSize() - 1;
-                            }
-                        } else {
-                            if (navY > player.getYBackpackSize() - 3) {
-                                navigation = QUICK;
-                                navX = 1;
-                                navY = 0;
-                            } else if (navY >= 0) {
-                                navigation = GEAR;
-                                navY = eqY - player.getYBackpackSize() + 2 - navY;
-                                navX = eqX - 1;
-                            } else {
-                                navX = player.getXBackpackSize() - 1;
-                            }
-                        }
-                    } else {
-                        navX = player.getXBackpackSize() - 1;
-                    }
-                } else {
-                    navX--;
-                }
-                break;
-            case RIGHT:
-                if (navX == player.getXBackpackSize() - 1) {
-                    if (player.isEquipmentOn()) {
-                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
-                            if (navY < 2) {
-                                navigation = QUICK;
-                                navX = 0;
-                                navY = 1;
-                            } else if (navY >= 2 && navY <= eqY + 1) {
-                                navigation = GEAR;
-                                navY -= 2;
-                                navX = 0;
-                            } else {
-                                navX = player.getXBackpackSize() - 1;
-                            }
-                        } else {
-                            if (navY > player.getYBackpackSize() - 3) {
-                                navigation = QUICK;
-                                navX = 0;
-                                navY = 1;
-                            } else if (navY >= 0) {
-                                navigation = GEAR;
-                                navY = eqY - player.getYBackpackSize() + 2 - navY;
-                                navX = 0;
-                            } else {
-                                navX = player.getXBackpackSize() - 1;
-                            }
-                        }
-                    } else {
-                        navX = 0;
-                    }
-                } else {
-                    navX++;
-                }
-                break;
-            case USE:
-                int i = navX + navY * player.getXBackpackSize();
-                Item item = player.getItems()[i];
-                if (item != Item.EMPTY) {
-                    if (player.isLoot()) {
-                        if (player.addItem(item)) {
-                            player.getItems()[i] = Item.EMPTY;
-                        }
-                    } else {
-                        System.out.println("To jest " + item.getName());
-                    }
-                }
-                break;
-        }
-    }
-
-    private void moveFromQuick() {
-        switch (player.getMenuKey()) {
-            case UP:
-                if (navX == 0 && navY == 0) {
-                    if (player.isGearOn()) {
-                        navigation = GEAR;
-                        navX = 1;
-                        navY = eqY - 1;
-                    } else {
-                        navX = 1;
-                        navY = 1;
-                    }
-                } else {
-                    navX = 0;
-                    navY = 0;
-                }
-                break;
-            case DOWN:
-                if (navX == 1 && navY == 1) {
-                    if (player.isGearOn()) {
-                        navigation = GEAR;
-                        navX = 1;
-                        navY = 0;
-                    } else {
-                        navX = 0;
-                        navY = 0;
-                    }
-                } else {
-                    navX = 1;
-                    navY = 1;
-                }
-                break;
-            case LEFT:
-                if (navX == 0 && navY == 1) {
-                    if (player.isEquipmentOn()) {
-                        navigation = EQUIP;
-                        navX = player.getXBackpackSize() - 1;
-                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
-                            navY = 0;
-                        } else {
-                            navY = player.getYBackpackSize() - 1;
-                        }
-                    } else {
-                        navX = 1;
-                        navY = 0;
-                    }
-                } else {
-                    navX = 0;
-                    navY = 1;
-                }
-                break;
-            case RIGHT:
-                if (navX == 1 && navY == 0) {
-                    if (player.isEquipmentOn()) {
-                        navigation = EQUIP;
-                        navX = 0;
-                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
-                            navY = 0;
-                        } else {
-                            navY = player.getYBackpackSize() - 1;
-                        }
-                    } else {
-                        navX = 0;
-                        navY = 1;
-                    }
-                } else {
-                    navX = 1;
-                    navY = 0;
-                }
-                break;
-            case USE:
-                System.out.println("Use QUICK");
-                break;
-        }
-    }
 
     private void renderAllElements() {
         renderLife();
@@ -459,21 +196,21 @@ public class MyGUI extends GUIObject {
             int secondPartWidth = 2 * size + 3 * border - 10;
             switch (corner) {
                 case LEFT_TOP:
-                    Drawer.regularShader.translate(0, menuHeight - 3 * border - 5);
+                    Drawer.regularShader.translate(0, menuHeight - 3 * border + 1);
                     break;
                 case RIGHT_TOP:
-                    Drawer.regularShader.translate(-2, menuHeight - 3 * border - 5);
+                    Drawer.regularShader.translate(-2, menuHeight - 3 * border + 1);
                     break;
                 case LEFT_BOTTOM:
-                    Drawer.regularShader.translate(0, -menuHeight - border + 1);
+                    Drawer.regularShader.translate(0, -menuHeight - border + 7);
                     break;
                 case RIGHT_BOTTOM:
-                    Drawer.regularShader.translate(-2, -menuHeight - border + 1);
+                    Drawer.regularShader.translate(-2, -menuHeight - border + 7);
                     break;
             }
             if (player.isGearOn()) {
                 Drawer.setColorStatic(0.4f, 0.4f, 0.4f, 0.9f);
-                Drawer.drawRectangle(0, 0, secondPartWidth, menuHeight);
+                Drawer.drawRectangle(0, -12, secondPartWidth, menuHeight + 12);
                 Item[] gear = ((MyPlayer) player).getGear();
                 if (gear[3] == player.getActiveWeapon()) {
                     activeWeapon = 3;
@@ -481,6 +218,11 @@ public class MyGUI extends GUIObject {
                     activeWeapon = 5;
                 }
                 drawSlots(eqX * eqY, eqX, 50, gear, navigation == GEAR);
+                equipTitle.setLineMaxSize(secondPartWidth);
+                equipTitle.setText(Settings.language.gui.Outfit
+                );
+                TextMaster.renderOnce(equipTitle, (int) ShaderProgram.getTransformationMatrix().m30,
+                        (int) ShaderProgram.getTransformationMatrix().m31 - 12);
             }
             activeWeapon = -1;
             if (player.isEquipmentOn()) {
@@ -508,8 +250,12 @@ public class MyGUI extends GUIObject {
                         Drawer.regularShader.translateNoReset(-xBackpack - 8, menuHeight + secondPartHeight - yBackpack);
                         break;
                 }
-                Drawer.drawRectangle(0, 0, xBackpack, yBackpack);
+                Drawer.drawRectangle(0, -12, xBackpack, yBackpack + 12);
                 drawSlots(xSlots * ySlots, xSlots, space, player.getItems(), navigation == EQUIP);
+                equipTitle.setLineMaxSize(xBackpack);
+                equipTitle.setText(player.isLoot() ? player.getLootName() : Settings.language.gui.Equipment);
+                TextMaster.renderOnce(equipTitle, (int) ShaderProgram.getTransformationMatrix().m30,
+                        (int) ShaderProgram.getTransformationMatrix().m31 - 12);
             }
         }
     }
@@ -542,7 +288,50 @@ public class MyGUI extends GUIObject {
         if (sel != -1) {
             Drawer.regularShader.translateNoReset(-4 + (sel % cols) * space, -5 + (sel / cols) * space);
             renderIconRing(selected);
+            renderHelp();
             Drawer.regularShader.translateNoReset(4 - (sel % cols) * space, 5 - (sel / cols) * space);
+        }
+    }
+
+    private void renderHelp() {
+        if (helpDelay.isOver()) {
+            Item item;
+            switch (navigation) {
+                case QUICK:
+                    if (navX == 1 && navY == 1) {
+                        info.setText("Świeczka");
+                    } else {
+                        return;
+                    }
+                    break;
+                case GEAR:
+                    item = ((MyPlayer) player).getGear()[navX + navY * eqX];
+                    if (item != Item.EMPTY) {
+                        info.setText(item.getName());
+                    } else {
+                        return;
+                    }
+                    break;
+                case EQUIP:
+                    Item[] items = player.getItems();
+                    if (items != null) {
+                        item = items[navX + navY * player.getXBackpackSize()];
+                        if (item != Item.EMPTY) {
+                            info.setText(item.getName());
+                        } else {
+                            return;
+                        }
+                    } else {
+                        return;
+                    }
+                    break;
+            }
+
+            Drawer.setColorStatic(selected);
+            int yStart = 4 + (5 - info.getNumberOfLines()) * 12;
+            Drawer.drawRectangle(0, yStart, 64, info.getNumberOfLines() * 12);
+            TextMaster.renderOnce(info, (int) ShaderProgram.getTransformationMatrix().m30,
+                    (int) ShaderProgram.getTransformationMatrix().m31 + yStart);
         }
     }
 
@@ -596,6 +385,7 @@ public class MyGUI extends GUIObject {
                     break;
             }
             renderIconRing(selected);
+            renderHelp();
         }
 
 
@@ -775,6 +565,301 @@ public class MyGUI extends GUIObject {
         }
     }
 
+    private void updateHandyMenu() {
+        switch (navigation) {
+            case QUICK:
+                moveFromQuick();
+                break;
+            case GEAR:
+                moveFromGear();
+                break;
+            case EQUIP:
+                moveFromEquip();
+                break;
+        }
+        if (player.getMenuKey() == USE) {
+            helpDelay.terminate();
+        } else if (player.getMenuKey() != -1) {
+            helpDelay.start();
+        }
+        player.setMenuKey(-1);
+    }
+
+    private void moveFromGear() {
+        switch (player.getMenuKey()) {
+            case UP:
+                if (navY == 0) {
+                    navigation = QUICK;
+                    navY = navX = 1;
+                } else {
+                    navY--;
+                }
+                break;
+            case DOWN:
+                if (navY == eqY - 1) {
+                    navigation = QUICK;
+                    navY = navX = 0;
+                } else {
+                    navY++;
+                }
+                break;
+            case LEFT:
+                if (navX == 0) {
+                    if (player.isEquipmentOn()) {
+                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
+                            if (navY < player.getYBackpackSize() - 2) {
+                                navigation = EQUIP;
+                                navY += 2;
+                                navX = player.getXBackpackSize() - 1;
+                            } else {
+                                navX = eqX - 1;
+                            }
+                        } else {
+                            if (navY > 5 - player.getYBackpackSize()) {
+                                navigation = EQUIP;
+                                navY = player.getYBackpackSize() - (6 - navY);
+                                navX = player.getXBackpackSize() - 1;
+                            } else {
+                                navX = eqX - 1;
+                            }
+                        }
+                    } else {
+                        navX = eqX - 1;
+                    }
+                } else {
+                    navX--;
+                }
+                break;
+            case RIGHT:
+                if (navX == eqX - 1) {
+                    if (player.isEquipmentOn()) {
+                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
+                            if (navY < player.getYBackpackSize() - 2) {
+                                navigation = EQUIP;
+                                navY += 2;
+                                navX = 0;
+                            } else {
+                                navX = 0;
+                            }
+                        } else {
+                            if (navY > 5 - player.getYBackpackSize()) {
+                                navigation = EQUIP;
+                                navY = player.getYBackpackSize() - (6 - navY);
+                                navX = 0;
+                            } else {
+                                navX = 0;
+                            }
+                        }
+                    } else {
+                        navX = 0;
+                    }
+                } else {
+                    navX++;
+                }
+                break;
+            case USE:
+                int i = navX + navY * eqX;
+                Item[] items = ((MyPlayer) player).getGear();
+                Item item = items[i];
+                if (item != Item.EMPTY) {
+                    if (item instanceof Weapon) {
+                        player.addItem(item);
+                        ((MyPlayer) player).putBackWeapon(item);
+                    } else {
+                        System.out.println("To jest " + item.getName());
+                    }
+                }
+                break;
+        }
+    }
+
+    private void moveFromEquip() {
+        switch (player.getMenuKey()) {
+            case UP:
+                if (navY == 0) {
+                    navY = player.getYBackpackSize() - 1;
+                } else {
+                    navY--;
+                }
+                break;
+            case DOWN:
+                if (navY == player.getYBackpackSize() - 1) {
+                    navY = 0;
+                } else {
+                    navY++;
+                }
+                break;
+            case LEFT:
+                if (navX == 0) {
+                    if (player.isEquipmentOn()) {
+                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
+                            if (navY < 2) {
+                                navigation = QUICK;
+                                navX = 1;
+                                navY = 0;
+                            } else if (navY >= 2 && navY <= eqY + 1) {
+                                navigation = GEAR;
+                                navY -= 2;
+                                navX = eqX - 1;
+                            } else {
+                                navX = player.getXBackpackSize() - 1;
+                            }
+                        } else {
+                            if (navY > player.getYBackpackSize() - 3) {
+                                navigation = QUICK;
+                                navX = 1;
+                                navY = 0;
+                            } else if (navY >= 0) {
+                                navigation = GEAR;
+                                navY = eqY - player.getYBackpackSize() + 2 - navY;
+                                navX = eqX - 1;
+                            } else {
+                                navX = player.getXBackpackSize() - 1;
+                            }
+                        }
+                    } else {
+                        navX = player.getXBackpackSize() - 1;
+                    }
+                } else {
+                    navX--;
+                }
+                break;
+            case RIGHT:
+                if (navX == player.getXBackpackSize() - 1) {
+                    if (player.isEquipmentOn()) {
+                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
+                            if (navY < 2) {
+                                navigation = QUICK;
+                                navX = 0;
+                                navY = 1;
+                            } else if (navY >= 2 && navY <= eqY + 1) {
+                                navigation = GEAR;
+                                navY -= 2;
+                                navX = 0;
+                            } else {
+                                navX = player.getXBackpackSize() - 1;
+                            }
+                        } else {
+                            if (navY > player.getYBackpackSize() - 3) {
+                                navigation = QUICK;
+                                navX = 0;
+                                navY = 1;
+                            } else if (navY >= 0) {
+                                navigation = GEAR;
+                                navY = eqY - player.getYBackpackSize() + 2 - navY;
+                                navX = 0;
+                            } else {
+                                navX = player.getXBackpackSize() - 1;
+                            }
+                        }
+                    } else {
+                        navX = 0;
+                    }
+                } else {
+                    navX++;
+                }
+                break;
+            case USE:
+                int i = navX + navY * player.getXBackpackSize();
+                Item[] items = player.getItems();
+                if (items != null) {
+                    Item item = items[i];
+                    if (item != Item.EMPTY) {
+                        if (player.isLoot()) {
+                            if (player.addItem(item)) {
+                                player.getItems()[i] = Item.EMPTY;
+                            }
+                        } else {
+                            if (item instanceof Weapon) {
+                                player.removeItem(item);
+                                ((MyPlayer) player).addWeapon((Weapon) item);
+                            } else {
+                                System.out.println("To jest " + item.getName());
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    private void moveFromQuick() {
+        switch (player.getMenuKey()) {
+            case UP:
+                if (navX == 0 && navY == 0) {
+                    if (player.isGearOn()) {
+                        navigation = GEAR;
+                        navX = 1;
+                        navY = eqY - 1;
+                    } else {
+                        navX = 1;
+                        navY = 1;
+                    }
+                } else {
+                    navX = 0;
+                    navY = 0;
+                }
+                break;
+            case DOWN:
+                if (navX == 1 && navY == 1) {
+                    if (player.isGearOn()) {
+                        navigation = GEAR;
+                        navX = 1;
+                        navY = 0;
+                    } else {
+                        navX = 0;
+                        navY = 0;
+                    }
+                } else {
+                    navX = 1;
+                    navY = 1;
+                }
+                break;
+            case LEFT:
+                if (navX == 0 && navY == 1) {
+                    if (player.isEquipmentOn()) {
+                        navigation = EQUIP;
+                        navX = player.getXBackpackSize() - 1;
+                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
+                            navY = 0;
+                        } else {
+                            navY = player.getYBackpackSize() - 1;
+                        }
+                    } else {
+                        navX = 1;
+                        navY = 0;
+                    }
+                } else {
+                    navX = 0;
+                    navY = 1;
+                }
+                break;
+            case RIGHT:
+                if (navX == 1 && navY == 0) {
+                    if (player.isEquipmentOn()) {
+                        navigation = EQUIP;
+                        navX = 0;
+                        if (corner == LEFT_TOP || corner == RIGHT_TOP) {
+                            navY = 0;
+                        } else {
+                            navY = player.getYBackpackSize() - 1;
+                        }
+                    } else {
+                        navX = 0;
+                        navY = 1;
+                    }
+                } else {
+                    navX = 1;
+                    navY = 0;
+                }
+                break;
+            case USE:
+                System.out.println("Use QUICK");
+                break;
+        }
+    }
+
+
     public boolean isOn() {
         return on;
     }
@@ -831,4 +916,7 @@ public class MyGUI extends GUIObject {
         return eqY;
     }
 
+    public void resetHelpDelay() {
+        helpDelay.start();
+    }
 }

@@ -8,6 +8,7 @@ import engine.utilities.Methods;
 import game.gameobject.entities.Entity;
 import game.gameobject.entities.Mob;
 import game.gameobject.entities.Player;
+import game.gameobject.items.Item;
 import game.gameobject.items.Weapon;
 import game.gameobject.stats.NPCStats;
 import game.place.Place;
@@ -76,7 +77,7 @@ public class Tercja extends Mob {
             player.getTextController().startFromFile("npc3demo", dialog);
 
             player.getTextController().addEventOnBranchStart(() -> {
-                if (player.getSecondWeapon() == null) {
+                if (player.getSecondWeapon() == Item.EMPTY) {
                     Weapon bow = new Weapon(0, 0, "Bow", place, 2, null, Weapon.BOW);
                     bow.setModifier(1f);
                     player.addWeapon(bow);
