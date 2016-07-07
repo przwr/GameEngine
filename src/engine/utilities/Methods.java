@@ -134,6 +134,25 @@ public class Methods {
         return det >= 0 ? det : det + 360;
     }
 
+    public static double threePointAngleAlpha(int xA, int yA, int xB, int yB, int xO, int yO) {
+//      TODO cała metoda do robienia - plan:
+//      TODO przesunąć tak, by punkt x0, y0 miał współrzędne 0,0
+//      TODO obrócić względem tego 0,0 tak, by punkt xB yB był po prawej stronie
+//      TODO w zależności od ćwiartki, w której znajdziesię punkt xA yA odpowiednio wyliczyć funkcję Alpha - Patrz grafika komputerowa
+//      TODO skoro mam obracać, to będę musiał liczyć funkcję trygonometryczną i tak - może jest na to inny sposób - warto spojrzeć na to przy optymalizacji
+
+        int xOA = xO - xA;
+        int yOA = yO - yA;
+        int xOB = xO - xB;
+        int yOB = yO - yB;
+        int xBA = xB - xA;
+        int yBA = yB - yA;
+        double A = FastMath.sqrt((xOA * xOA) + (yOA * yOA));
+        double B = FastMath.sqrt((xOB * xOB) + (yOB * yOB));
+        double AB = FastMath.sqrt((xBA * xBA) + (yBA * yBA));
+        return FastMath.acos(((B * B) + (A * A) - (AB * AB)) / (2 * B * A));
+    }
+
     public static double threePointAngle(int xA, int yA, int xB, int yB, int xO, int yO) {
         int xOA = xO - xA;
         int yOA = yO - yA;
@@ -309,14 +328,17 @@ public class Methods {
         }
     }
 
+//    static Timer timer = new Timer("angle", 1000);
+
     private static void getCastingPointsFromRest(int x, int y, List<Point> points, Point result) {
         double angle = 0;
         double temp = 0;
         int first = 0, second = 0;
         for (int i = 0; i < points.size(); i++) {
             for (int j = i + 1; j < points.size(); j++) {
-                temp = Methods.threePointAngle(points.get(i).getX(), points.get(i).getY(), points.get(j).getX(), points
-                        .get(j).getY(), x, y);
+//                timer.start();
+                temp = Methods.threePointAngle(points.get(i).getX(), points.get(i).getY(), points.get(j).getX(), points.get(j).getY(), x, y);
+//                timer.stop();
                 if (temp > angle) {
                     angle = temp;
                     first = i;
@@ -326,6 +348,7 @@ public class Methods {
         }
         result.set(first, second);
     }
+
 
     public static void getCastingPoints(int x, int y, int xS, int xE, int yS, int yE, Point[] result) {
         if (x > xE) {

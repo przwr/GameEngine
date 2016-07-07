@@ -561,4 +561,10 @@ public class MyPlayer extends Player {
         gui.setNavX(0);
         gui.setNavY(0);
     }
+
+    public void switchWeapons() {
+        Item temp = gear[FIRST_WEAPON];
+        gear[FIRST_WEAPON] = gear[SECOND_WEAPON];
+        gear[SECOND_WEAPON] = temp;
+    }
 }

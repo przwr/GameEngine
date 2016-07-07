@@ -13,7 +13,6 @@ import game.Settings;
 import game.gameobject.GUIObject;
 import game.gameobject.entities.Player;
 import game.gameobject.items.Item;
-import game.gameobject.items.Weapon;
 import game.gameobject.stats.PlayerStats;
 import game.place.Place;
 import game.place.cameras.Camera;
@@ -26,13 +25,15 @@ import sprites.SpriteSheet;
 import sprites.shaders.ShaderProgram;
 import sprites.vbo.VertexBufferObject;
 
+import java.util.ArrayList;
+
 /**
  * @author Wojtek
  */
 public class MyGUI extends GUIObject {
 
 
-    public final static int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, USE = 4;
+    public final static int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, USE = 4, REMOVE = 5;
     public static final int QUICK = 0, GEAR = 1, EQUIP = 2;
     private final static int LEFT_TOP = 0, RIGHT_TOP = 1, LEFT_BOTTOM = 2, RIGHT_BOTTOM = 3;
     private SpriteSheet attackIcons, itemIcons;
@@ -47,7 +48,7 @@ public class MyGUI extends GUIObject {
     private Delay lifeDelay = Delay.createInSeconds(1),
             energyDelay = Delay.createInSeconds(1),
             energyLowDelay = Delay.createInMilliseconds(250),
-            helpDelay = Delay.createInMilliseconds(750);
+            helpDelay = Delay.createInSeconds(1);
     private VertexBufferObject arrows, rings;
     private int[] placement = new int[2 * 3];
     private int corner = LEFT_TOP, activeWeapon = -1;
@@ -59,6 +60,9 @@ public class MyGUI extends GUIObject {
     private TextPiece info = new TextPiece("", (int) (12 * (0.75 / Settings.nativeScale)), TextMaster.getFont("Lato-Regular"), 64, true);
     private TextPiece gearTitle = new TextPiece("", (int) (12 * (0.75 / Settings.nativeScale)), TextMaster.getFont("Lato-Regular"), 64, true);
     private TextPiece equipTitle = new TextPiece("", (int) (12 * (0.75 / Settings.nativeScale)), TextMaster.getFont("Lato-Regular"), 64, true);
+    private boolean showOptions;
+    private Item chosen;
+    private ArrayList<HandyOption> options = new ArrayList<>(5);
 
     public MyGUI(String name, Place place) {
         super(name, place);
@@ -289,9 +293,22 @@ public class MyGUI extends GUIObject {
             Drawer.regularShader.translateNoReset(-4 + (sel % cols) * space, -5 + (sel / cols) * space);
             renderIconRing(selected);
             renderHelp();
+            renderOptions();
             Drawer.regularShader.translateNoReset(4 - (sel % cols) * space, 5 - (sel / cols) * space);
         }
     }
+
+    private void renderOptions() {
+        if (showOptions) {
+            info.setText(chosen.getName() + " Opcje:\n");
+            Drawer.setColorStatic(selected);
+            int yStart = 4 + (5 - info.getNumberOfLines()) * 12;
+            Drawer.drawRectangle(0, yStart, 64, info.getNumberOfLines() * 12);
+            TextMaster.renderOnce(info, (int) ShaderProgram.getTransformationMatrix().m30,
+                    (int) ShaderProgram.getTransformationMatrix().m31 + yStart);
+        }
+    }
+
 
     private void renderHelp() {
         if (helpDelay.isOver()) {
@@ -386,6 +403,7 @@ public class MyGUI extends GUIObject {
             }
             renderIconRing(selected);
             renderHelp();
+            renderOptions();
         }
 
 
@@ -566,21 +584,28 @@ public class MyGUI extends GUIObject {
     }
 
     private void updateHandyMenu() {
-        switch (navigation) {
-            case QUICK:
-                moveFromQuick();
-                break;
-            case GEAR:
-                moveFromGear();
-                break;
-            case EQUIP:
-                moveFromEquip();
-                break;
-        }
-        if (player.getMenuKey() == USE) {
-            helpDelay.terminate();
-        } else if (player.getMenuKey() != -1) {
-            helpDelay.start();
+        if (showOptions) {
+//            TODO obsługa chodzenia po opcjach
+            if (player.getMenuKey() == USE) {
+                showOptions = false;
+            }
+        } else {
+            switch (navigation) {
+                case QUICK:
+                    moveFromQuick();
+                    break;
+                case GEAR:
+                    moveFromGear();
+                    break;
+                case EQUIP:
+                    moveFromEquip();
+                    break;
+            }
+            if (player.getMenuKey() == USE) {
+                helpDelay.stop();
+            } else if (player.getMenuKey() != -1) {
+                helpDelay.start();
+            }
         }
         player.setMenuKey(-1);
     }
@@ -662,13 +687,17 @@ public class MyGUI extends GUIObject {
                 Item[] items = ((MyPlayer) player).getGear();
                 Item item = items[i];
                 if (item != Item.EMPTY) {
-                    if (item instanceof Weapon) {
-                        player.addItem(item);
-                        ((MyPlayer) player).putBackWeapon(item);
-                    } else {
-                        System.out.println("To jest " + item.getName());
-                    }
+                    chosen = item;
+                    showOptions = true;
                 }
+//                if (item != Item.EMPTY) {
+//                    if (item instanceof Weapon) {
+//                        player.addItem(item);
+//                        ((MyPlayer) player).putBackWeapon(item);
+//                    } else {
+//                        System.out.println("To jest " + item.getName());
+//                    }
+//                }
                 break;
         }
     }
@@ -765,18 +794,20 @@ public class MyGUI extends GUIObject {
                 if (items != null) {
                     Item item = items[i];
                     if (item != Item.EMPTY) {
-                        if (player.isLoot()) {
-                            if (player.addItem(item)) {
-                                player.getItems()[i] = Item.EMPTY;
-                            }
-                        } else {
-                            if (item instanceof Weapon) {
-                                player.removeItem(item);
-                                ((MyPlayer) player).addWeapon((Weapon) item);
-                            } else {
-                                System.out.println("To jest " + item.getName());
-                            }
-                        }
+                        chosen = item;
+                        showOptions = true;
+//                        if (player.isLoot()) {
+//                            if (player.addItem(item)) {
+//                                player.getItems()[i] = Item.EMPTY;
+//                            }
+//                        } else {
+//                            if (item instanceof Weapon) {
+//                                player.removeItem(item);
+//                                ((MyPlayer) player).addWeapon((Weapon) item);
+//                            } else {
+//                                System.out.println("To jest " + item.getName());
+//                            }
+//                        }
                     }
                 }
                 break;
@@ -854,6 +885,8 @@ public class MyGUI extends GUIObject {
                 }
                 break;
             case USE:
+//                TODO pobieranie tych rzeczy skądś
+                showOptions = true;
                 System.out.println("Use QUICK");
                 break;
         }
@@ -918,5 +951,10 @@ public class MyGUI extends GUIObject {
 
     public void resetHelpDelay() {
         helpDelay.start();
+    }
+
+
+    private interface HandyOption {
+        void use(Item item);
     }
 }

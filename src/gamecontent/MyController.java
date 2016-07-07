@@ -206,6 +206,8 @@ public class MyController extends PlayerController {
                 inControl.setMenuKey(MyGUI.LEFT);
             } else if (actions[INPUT_ACTION].isKeyClicked()) {
                 inControl.setMenuKey(MyGUI.USE);
+            } else if (actions[INPUT_CHANGE_WEAPON].isKeyClicked()) {
+                inControl.setMenuKey(MyGUI.REMOVE);
             }
         }
     }
