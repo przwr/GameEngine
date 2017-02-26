@@ -22,7 +22,6 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Block extends GameObject {
 
-    private static Figure tempCollision;
     private final ArrayList<Figure> top = new ArrayList<>(1);
     private final ArrayList<ForegroundTile> topForegroundTiles = new ArrayList<>();
     private final ArrayList<ForegroundTile> wallForegroundTiles = new ArrayList<>();
@@ -170,7 +169,7 @@ public class Block extends GameObject {
             glTranslatef(xEffect + getX(), yEffect + getY(), 0);
             Drawer.setCentralPoint();
             wallForegroundTiles.stream().forEach((wall) -> {
-                tempCollision = wall.getCollision();
+                Figure tempCollision = wall.getCollision();
                 Drawer.returnToCentralPoint();
                 Drawer.translate(tempCollision.getX() - getX(), tempCollision.getY() - getY() - tempCollision.getShadowHeight());
                 if (wall.isSimpleLighting()) {
@@ -194,7 +193,7 @@ public class Block extends GameObject {
             glTranslatef(xEffect + getX(), yEffect + getY(), 0);
             Drawer.setCentralPoint();
             wallForegroundTiles.stream().forEach((wall) -> {
-                tempCollision = wall.getCollision();
+                Figure tempCollision = wall.getCollision();
                 Drawer.returnToCentralPoint();
                 Drawer.translate(tempCollision.getX() - getX(), tempCollision.getY() - getY() - tempCollision.getShadowHeight());
                 if (wall.isSimpleLighting()) {
@@ -218,7 +217,7 @@ public class Block extends GameObject {
             glTranslatef(xEffect + getX(), yEffect + getY(), 0);
             Drawer.setCentralPoint();
             wallForegroundTiles.stream().forEach((wall) -> {
-                tempCollision = wall.getCollision();
+                Figure tempCollision = wall.getCollision();
                 Drawer.returnToCentralPoint();
                 Drawer.translate(tempCollision.getX() - getX(), tempCollision.getY() - getY() - tempCollision.getShadowHeight());
                 if (wall.isSimpleLighting()) {

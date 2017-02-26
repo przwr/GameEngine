@@ -103,6 +103,13 @@ public class ShadowContainer {
         shadowsCount = 0;
     }
 
+
+    public void clearReally() {
+        for (int i = 0; i < shadows.length; i++) {
+            shadows[i] = null;
+        }
+    }
+
     public int size() {
         return shadowsCount;
     }

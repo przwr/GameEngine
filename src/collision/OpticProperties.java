@@ -8,6 +8,9 @@ package collision;
 import engine.lights.Shadow;
 import engine.lights.ShadowContainer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author przemek
  */
@@ -16,6 +19,7 @@ public class OpticProperties {
     public static final byte FULL_SHADOW = 0, NO_SHADOW = 1, TRANSPARENT = 2, IN_SHADE_NO_SHADOW = 3;
     private static final boolean[] LITABLE = {true, true, false, false};
     private static final boolean[] GIVE_SHADOW = {true, false, false, false};
+    public static List<OpticProperties> instances = new ArrayList<>();
     private int type;
     private int shadowHeight;
     private int lightDistance;
@@ -25,6 +29,7 @@ public class OpticProperties {
         this.type = type;
         this.shadowHeight = shadowHeight;
         this.shadows = new ShadowContainer();
+        instances.add(this);
     }
 
     public static OpticProperties create(int type, int shadowHeight) {
@@ -33,6 +38,13 @@ public class OpticProperties {
 
     public static OpticProperties create(int type) {
         return new OpticProperties(type, 0);
+    }
+
+    public static void cleanUp() {
+        for (OpticProperties op : instances) {
+            op.shadows.clearReally();
+        }
+        instances.clear();
     }
 
     public void addShadow(Shadow shadow) {

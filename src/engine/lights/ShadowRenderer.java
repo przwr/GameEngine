@@ -41,16 +41,15 @@ public class ShadowRenderer {
     private static final Point[] shadowPoints = {new Point(), new Point(), new Point(), new Point()};
     private static final Polygon polygon = new Polygon();
     private static final ShadowContainer darkenSpots = new ShadowContainer(), brightenSpots = new ShadowContainer();
-    private static final engine.utilities.Point casting = new Point();
+    private static final Point casting = new Point();
     private static boolean checked;
     private static int shX, shY, xc, yc, range, XL1, XL2, XR1, XR2, lightYEnd, lightYStart, lightXEnd, lightXStart, centerX, centerY,
             lightXCentralShifted, lightYCentralShifted, shadow0X, shadow0Y, shadow1X, shadow1Y, shadow2X, shadow2Y, shadow3X, shadow3Y;
     private static float al, bl, ar, br, as, bs, XOL, XOR, YOL, YOL2, YOR, YOR2;
     private static double angle;
     private static Shadow tempShadow, minShadow, maxShadow;
-    private static Figure tempShade;
-    private static Area area;
     private static Point tempPoint;
+    private static Area area;
 
     private static void DEBUG(String message) {
         if (DEBUG) {
@@ -111,12 +110,13 @@ public class ShadowRenderer {
         searchBlocks(light);
         searchForegroundTiles();
         searchObjects();
+        area = null;
         Collections.sort(shades);
     }
 
     private static void searchBlocks(Light light) {
         for (Block block : area.getNearBlocks()) {
-            tempShade = block.getCollision();
+            Figure tempShade = block.getCollision();
             if (tempShade != null && tempShade.getType() != NO_SHADOW) {
                 if (tempShade.getX() <= lightXEnd && tempShade.getXEnd() >= lightXStart
                         && tempShade.getY() - FastMath.abs(tempShade.getShadowHeight()) - Place.tileSize <= lightYEnd && tempShade.getYEnd() >= lightYStart) {
@@ -136,7 +136,7 @@ public class ShadowRenderer {
     private static void searchForegroundTiles() {
         for (GameObject fgTile : area.getNearForegroundTiles()) {
             if (!fgTile.isInBlock()) {
-                tempShade = fgTile.getCollision();
+                Figure tempShade = fgTile.getCollision();
                 if (tempShade != null && (tempShade.isLitable() || tempShade.getType() == OpticProperties.IN_SHADE_NO_SHADOW) && tempShade.getOwner()
                         .getAppearance() != null
                         && fgTile.getY() - tempShade.getActualHeight() + tempShade.getHeightHalf() <= lightYEnd
@@ -151,7 +151,7 @@ public class ShadowRenderer {
 
     private static void searchObjects() {
         for (GameObject object : area.getNearDepthObjects()) {
-            tempShade = object.getCollision();
+            Figure tempShade = object.getCollision();
             if (tempShade != null && tempShade.isLitable() && tempShade.getOwner().getAppearance() != null && object.isVisible()
                     && object.getY() - tempShade.getActualHeight() + tempShade.getHeightHalf() <= lightYEnd
                     && object.getY() + tempShade.getActualHeight() - tempShade.getHeightHalf() >= lightYStart

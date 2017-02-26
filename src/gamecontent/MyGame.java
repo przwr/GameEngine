@@ -5,10 +5,10 @@
  */
 package gamecontent;
 
+import collision.OpticProperties;
 import engine.Main;
-import engine.utilities.BlueArray;
-import engine.utilities.Drawer;
-import engine.utilities.ErrorHandler;
+import engine.utilities.*;
+import engine.view.Renderer;
 import engine.view.SplitScreen;
 import game.Game;
 import game.Settings;
@@ -16,6 +16,7 @@ import game.gameobject.GameObject;
 import game.gameobject.entities.Player;
 import game.logic.maploader.MapLoaderModule;
 import game.logic.navmeshpathfinding.PathFindingModule;
+import game.logic.navmeshpathfinding.navigationmesh.NavigationMesh;
 import game.place.Place;
 import game.place.cameras.PlayersCamera;
 import game.place.map.Map;
@@ -227,7 +228,6 @@ public class MyGame extends Game {
         } else {
             place = new MyPlace(this, 64);
         }
-        Drawer.place = place;
         place.players = new GameObject[4];
         place.playersCount = playersCount;
         Place.progress = 2;
@@ -464,16 +464,22 @@ public class MyGame extends Game {
         Bush.fbos.clear();
         GrassClump.instances.clear();
         GrassClump.fbos.clear();
-        if (place != null)
+        if (place != null) {
             place.cleanUp();
+            Place.currentCamera = null;
+        }
         place = null;
         mode = 0;
         Place.currentCamera = null;
         for (BlueArray array : BlueArray.instances) {
             array.clearReally();
         }
-        BlueArray.instances.clear();
-        System.gc();
+        BlueArray.cleanUp();
+        OpticProperties.cleanUp();
+        PointContainer.cleanUp();
+        NavigationMesh.cleanUp();
+        Renderer.place = null;
+        Methods.gc();
     }
 
     private void soundPause() {

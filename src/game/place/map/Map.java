@@ -38,7 +38,6 @@ public abstract class Map {
     protected static final PointContainer NO_SOLUTION = new PointContainer(0);
     protected static final Comparator<GameObject> depthComparator = (GameObject firstObject, GameObject secondObject) ->
             firstObject.getDepth() - secondObject.getDepth();
-    protected static Tile tempTile;
     private static int POINTING_ARROW_HEIGHT = 128;
     public final Place place;
     protected final int tileSize;
@@ -696,7 +695,7 @@ public abstract class Map {
             Drawer.drawRectangleBorder(0, 0, xAreaInPixels, yAreaInPixels);
             Drawer.returnToCentralPoint();
             Drawer.renderStringCentered(String.valueOf(i), Place.tileSize, Place.tileSize,
-                    Drawer.getFont("Amble-Regular", (int) (Place.getCurrentScale() * 32)), Color.cyan);
+                    place.fonts.getFont("Amble-Regular", 0, (int) (Place.getCurrentScale() * 32)), Color.cyan);
             glPopMatrix();
 
             glPushMatrix();
@@ -729,7 +728,7 @@ public abstract class Map {
                     int x = xTemp + xTiles;
                     if (cameraXStart < (x + 1) * tileSize && cameraXEnd > x * tileSize) {
                         Area area = areas[i];
-                        tempTile = area != null ? area.getTile(xTiles, yTiles) : null;
+                        Tile tempTile = area != null ? area.getTile(xTiles, yTiles) : null;
                         if (tempTile != null && tempTile.isVisible()) {
                             tempTile.renderSpecific(cameraXOffEffect, cameraYOffEffect, x * tileSize, y * tileSize);
                         }

@@ -35,9 +35,6 @@ public class AreaConnection {
     }
 
     public Point getCentralPoint() {
-        if (connectionPoints.size() == 0) {
-            System.out.println();
-        }
         return connectionPoints.get((connectionPoints.size() - 1) / 2);
     }
 

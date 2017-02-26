@@ -6,7 +6,6 @@
 package engine.utilities;
 
 import game.ScreenPlace;
-import game.place.Place;
 import game.text.FontHandler;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
@@ -31,7 +30,6 @@ public class Drawer {
 
     private static final Texture font = loadFontTexture();
     public static int displayWidth, displayHeight;
-    public static Place place;
     private static float xCurrent, yCurrent;
     private static Color currentColor = Color.white;
 
@@ -379,10 +377,6 @@ public class Drawer {
     
     public static void setColorBlended(Color color) {
         glColor4f(color.r * currentColor.r, color.g * currentColor.g, color.b * currentColor.b, color.a);
-    }
-
-    public static FontHandler getFont(String name, int size) {
-        return place.fonts.getFont(name, 0, size);
     }
 
     public static void renderStringCentered(String message, double x, double y, FontHandler font, Color color) {

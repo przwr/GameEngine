@@ -54,6 +54,13 @@ public class BlueArray<E> extends AbstractList<E> implements List<E>, RandomAcce
         return (minCapacity > MAX_ARRAY_SIZE) ? Integer.MAX_VALUE : MAX_ARRAY_SIZE;
     }
 
+    public static void cleanUp() {
+        for (BlueArray ba : instances) {
+            ba.clearReally();
+        }
+        instances.clear();
+    }
+
     public void trimToSize() {
         modCount++;
         if (size < elementData.length) {

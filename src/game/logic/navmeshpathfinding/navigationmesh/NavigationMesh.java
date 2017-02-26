@@ -17,6 +17,7 @@ import java.util.*;
  */
 public class NavigationMesh {
 
+    public static List<NavigationMesh> instances = new ArrayList<>();
     final ArrayList<Bound> bounds = new ArrayList<>();
     private final Set<Triangle> mesh = new HashSet<>();
     private final Node[] sharedNodes = new Node[2];
@@ -35,6 +36,17 @@ public class NavigationMesh {
         this.collisionPoints = collisionPoints;
         this.shiftDirections = shiftDirections;
         this.spots = spots;
+        instances.add(this);
+    }
+
+    public static void cleanUp() {
+        for (NavigationMesh mesh : instances) {
+            mesh.bounds.clear();
+            mesh.mesh.clear();
+            mesh.collisionPoints.clear();
+            mesh.spots.clear();
+        }
+        instances.clear();
     }
 
     public void addLooseTriangle(Triangle triangle) {
